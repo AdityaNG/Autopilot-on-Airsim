@@ -19,6 +19,15 @@ for camera_name in range(5):
     print("CameraInfo %d:" % camera_name)
     pp.pprint(camera_info)
 
+cam_name = {
+        '0': 'Front',
+        '1': 'Back',
+        '2': 'Right',
+        '3': 'Left',
+        '4': 'FrontLR',
+}
+cam_name_show = ['0', '1', '2', '3', '4']
+
 while True:
     responses = client.simGetImages([
         #airsim.ImageRequest("0", airsim.ImageType.DepthVis),
@@ -36,7 +45,7 @@ while True:
         ])
 
     for i, response in enumerate(responses):
-        #print(response)
+        #print(dir(response))
         #filename = os.path.join(tmp_dir, str(x) + "_" + str(i))
         if response.pixels_as_float:
             #print("pixels_as_float Type %d, size %d, pos %s" % (response.image_type, len(response.image_data_float), pprint.pformat(response.camera_position)))
@@ -49,6 +58,7 @@ while True:
         img = np.fromstring(img, dtype=np.uint8)
         img = img.reshape(response.height, response.width, 3)
         #print(img)
-        cv2.imshow(str(i), img)
-        cv2.waitKey(1)
+        if response.camera_name in cam_name_show:
+            cv2.imshow(cam_name[response.camera_name], img)
+            cv2.waitKey(1)
 
