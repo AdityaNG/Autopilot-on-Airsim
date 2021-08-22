@@ -5,6 +5,11 @@ import os
 import time
 import math
 import pprint
+import argparse
+parser = argparse.ArgumentParser()
+parser.add_argument('-c', '--camera_list', nargs='+', default=['0', '1', '2', '3', '4'], help='List of cameras visualised : [0, 1, ... , 4]')
+args = parser.parse_args()
+
 pp = pprint.PrettyPrinter(indent=4)
 
 
@@ -26,7 +31,7 @@ cam_name = {
         '3': 'Left',
         '4': 'FrontLR',
 }
-cam_name_show = ['0', '1', '2', '3', '4']
+cam_name_show = args.camera_list
 
 while True:
     responses = client.simGetImages([
