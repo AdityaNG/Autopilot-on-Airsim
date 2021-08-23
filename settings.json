@@ -18,7 +18,7 @@
 		  "Pitch": 0, "Roll": 0, "Yaw": 0,
 		  "CaptureSettings": [
 			{
-			"FOV_Degrees": 44,
+			"FOV_Degrees": 90,
 			"AutoExposureSpeed": 100,
 			"AutoExposureBias": 0,
 			"AutoExposureMaxBrightness": 0.64,

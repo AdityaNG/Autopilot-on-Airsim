@@ -20,12 +20,13 @@ Current setup involves 5 cameras. Four of them being 120 deg wide angle for shor
 Download the Airsim 1.4.0 binaries from github : https://github.com/microsoft/AirSim/releases/tag/v1.4.0-linux
 
 
-The python client can be installed from pip :
+## Setting up Python env
 
+The environment involes installing the headless version of OpenCV. This script creates a Virtual Env at `~/auto`
 ```bash
-pip install airsim
+./setup_env.sh
+source ~/auto/bin/activate
 ```
-
 
 ## Launching Airsim
 
