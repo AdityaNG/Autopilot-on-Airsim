@@ -9,6 +9,8 @@ import argparse
 import threading
 import plotter
 
+from utils import *
+
 parser = argparse.ArgumentParser()
 parser.add_argument('-c', '--camera_list', nargs='+', default=['0', '1', '2', '3', '4'], help='List of cameras visualised : [0, 1, ... , 4]')
 args = parser.parse_args()
@@ -18,6 +20,7 @@ pp = pprint.PrettyPrinter(indent=4)
 #plotter.init_disp()
 
 client = airsim.CarClient()
+client.reset()
 client.confirmConnection()
 client.enableApiControl(False)
 print("API Control enabled: %s" % client.isApiControlEnabled())
@@ -61,11 +64,11 @@ def image_loop():
             airsim.ImageRequest("3", airsim.ImageType.Scene, False, False),
             airsim.ImageRequest("4", airsim.ImageType.Scene, False, False),
 
-            #airsim.ImageRequest("0", airsim.ImageType.DepthVis, True, False),
-            #airsim.ImageRequest("1", airsim.ImageType.DepthVis, True, False),
-            #airsim.ImageRequest("2", airsim.ImageType.DepthVis, True, False),
-            #airsim.ImageRequest("3", airsim.ImageType.DepthVis, True, False),
-            airsim.ImageRequest("4", airsim.ImageType.DepthVis, True, False),
+            airsim.ImageRequest("0", airsim.ImageType.DepthVis, True, False),
+            airsim.ImageRequest("1", airsim.ImageType.DepthVis, True, False),
+            airsim.ImageRequest("2", airsim.ImageType.DepthVis, True, False),
+            airsim.ImageRequest("3", airsim.ImageType.DepthVis, True, False),
+            #airsim.ImageRequest("4", airsim.ImageType.DepthVis, True, False),
 
             airsim.ImageRequest("0", airsim.ImageType.Segmentation, False, False),
             airsim.ImageRequest("1", airsim.ImageType.Segmentation, False, False),
@@ -77,6 +80,7 @@ def image_loop():
             #airsim.ImageRequest("4", airsim.ImageType.SurfaceNormals)
             ])
 
+        final_points = np.array([[0, 0, 0], ])
         for i, response in enumerate(responses):
             #print(dir(response))
             #filename = os.path.join(tmp_dir, str(x) + "_" + str(i))
@@ -98,17 +102,33 @@ def image_loop():
             #print(img)
             if mode_name[response.image_type] == 'DepthVis':
                 p_mat = np.array(camera_data[response.camera_name].proj_mat.matrix)
+                #R_mat = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
+                #T_mat = np.array([0, 0, 0])
+                Quat = camera_data[response.camera_name].pose.orientation
+                Quat = [Quat.w_val, Quat.x_val, Quat.y_val, Quat.z_val ]
+                
+                R_mat = np.array(quaternion_rotation_matrix(Quat))
+                T_mat = camera_data[response.camera_name].pose.position
+                T_mat = np.array([T_mat.x_val, T_mat.y_val, T_mat.z_val] )
                 points = cv2.reprojectImageTo3D(depth, p_mat)
                 points = cv2.reprojectImageTo3D(img, p_mat)
+                points = np.array([p for r in points for p in r])
+
+                points_rt = np.zeros(shape=points.shape)
+                for i in range(len(points)):
+                    p = points[i]
+                    points_rt[i] = R_mat.dot(p) + T_mat
                 #points = [(0,0,0), ]
                 #points = list(filter(lambda p: (-float('inf')<p).all() and (p<float('inf')).all(), points))
                 #points = list(filter(lambda p: not p[0].isinf() and not p[0].isinf() and not p[0].isinf(), points))
-                #print(points)
-                plotter.plot_points(points)
+                print(points_rt.shape)
+                final_points = np.concatenate((final_points, points_rt))
+
             if response.camera_name in cam_name_show:
                 #cv2.imshow(cam_name[response.camera_name] + "_" + mode_name[response.image_type], img)
                 #cv2.waitKey(1)
                 pass
+        plotter.plot_points(final_points)
 
 image_loop_thread = threading.Thread(target=image_loop, daemon=True)
 image_loop_thread.start()

@@ -22,7 +22,7 @@ Download the Airsim 1.4.0 binaries from github : https://github.com/microsoft/Ai
 
 ## Setting up Python env
 
-The environment involes installing the headless version of OpenCV. This script creates a Virtual Env at `~/auto`
+The environment involes installing the headless version of OpenCV as the normal version causes PyQt5 to crash. This script creates a Virtual Env at `~/auto`
 ```bash
 ./setup_env.sh
 source ~/auto/bin/activate
