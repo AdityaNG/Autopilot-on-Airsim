@@ -8,15 +8,31 @@ import pprint
 import argparse
 import threading
 import plotter
-
-from utils import *
+import subprocess
+from autopilot_utils import *
+from datetime import datetime
+import signal
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-c', '--camera_list', nargs='+', default=['0', '1', '2', '3', '4'], help='List of cameras visualised : [0, 1, ... , 4]')
+parser.add_argument('-exe', '--executable', type=str, default=os.path.abspath(os.path.join(os.getenv("HOME"), "Apps/AirSimNH_1.4.0/LinuxNoEditor/AirSimNH.sh")), help='Path to Airshim.sh')
+parser.add_argument('-s', '--settings', type=str, default=os.path.abspath(os.path.join(os.getenv("HOME"), "Autopilot/settings.json")), help='Path to Airshim settings.json')
 args = parser.parse_args()
 
 pp = pprint.PrettyPrinter(indent=4)
 
+current_date = str(datetime.now().strftime("%d-%m-%Y_%H%M%S"))
+logfilename = 'logs/{}_LOG.txt'.format(current_date)
+simfilename = 'logs/{}_SIM.txt'.format(current_date)
+if not os.path.exists(os.path.dirname(logfilename)):
+    try:
+        os.makedirs(os.path.dirname(logfilename))
+    except OSError as exc: # Guard against race condition
+        if exc.errno != errno.EEXIST:
+            raise
+simfile = open(simfilename, 'w')
+proc = subprocess.Popen([args.executable, '-WINDOWED', '-ResX=640', '-ResY=480', '--settings', args.settings], stdout=simfile)
+time.sleep(5)
 #plotter.init_disp()
 
 client = airsim.CarClient()
@@ -133,8 +149,32 @@ def image_loop():
 image_loop_thread = threading.Thread(target=image_loop, daemon=True)
 image_loop_thread.start()
 plotter.start_graph()
+while proc.poll() is not None:
+    pass
+
+print("Sim shutdown")
+# process has not (yet) terminated. 
+
+# Try to stop it gracefully.
+#os.kill(proc.pid, signal.CTRL_BREAK_EVENT)
+os.kill(proc.pid, signal.SIGINT)
+#time.sleep(5)
+
+# Still running?
+if proc.poll() is None:
+    # Kill it with fire
+    proc.terminate()
+    # Wait for it to finish
+    proc.wait()
+
+# Going to kill all related processes created by simulation_process
+#os.system("taskkill /im Blocks* /F")
+os.system("killall AirSimNH")
 exit()
 while True:
     #image_loop()
-    plotter.main_loop()
-    plotter.start_graph()
+    try:
+        plotter.main_loop()
+        plotter.start_graph()
+    except:
+        pass

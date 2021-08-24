@@ -15,7 +15,7 @@ Current setup involves 5 cameras. Four of them being 120 deg wide angle for shor
 
 # Getting Started 
 
-## Installing Airsim 1.4.0
+## Download Airsim
 
 Download the Airsim 1.4.0 binaries from github : https://github.com/microsoft/AirSim/releases/tag/v1.4.0-linux
 
