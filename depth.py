@@ -114,6 +114,10 @@ if __name__=="__main__":
     import cv2
     cap = cv2.VideoCapture(0)
     m = monodepth2()
+    
+    cv2.namedWindow('frame',cv2.WINDOW_AUTOSIZE)
+    cv2.namedWindow('depth',cv2.WINDOW_AUTOSIZE)
+
     while(True):
         try:
             # Capture the video frame
@@ -125,18 +129,18 @@ if __name__=="__main__":
             # Display the resulting frame
             depth = m.eval(frame)
             
-            cv2.imwrite('tmps/frame.png', frame)
-            cv2.imwrite('tmps/depth.png', depth)
+            cv2.imwrite('./tmps/frame.png', frame)
+            cv2.imwrite('./tmps/depth.png', depth)
             #depth.save('depth.jpeg')
+            cv2.imshow("depth", depth)
+            cv2.imshow("frame", frame)
             
-            # the 'q' button is set as the
-            # quitting button you may use any
-            # desired button of your choice
-            time.sleep(0.01)
-        except:
-             break
+            if cv2.waitKey(1) & 0xFF == ord('q'): break # Press q to terminate the program
+            #time.sleep(0.01)
+        
+        except Exception as e:
+            print(e)
+            break
     
-    # After the loop release the cap object
-    cap.release()
-    # Destroy all the windows
-    cv2.destroyAllWindows()
+    cap.release()           # After the loop release the cap object
+    cv2.destroyAllWindows() # Destroy all the windows
