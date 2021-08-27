@@ -13,8 +13,8 @@ import sys
 import math
 
 global POINTS
+global point_cloud_array
 POINTS = []
-
 def dist(a, b):
     return ((a[0]-b[0])**2 + (a[1]-b[1])**2 + (a[2]-b[2])**2)**0.5
 
@@ -23,10 +23,13 @@ calculated = False
 
 
 def update_graph():
-    global graph_region, POINTS
+    global graph_region, POINTS, point_cloud_array
     global min_height, max_height, colors, calculated, max_dist, min_dist, dist_range
     colors = np.ones(shape=(len(POINTS), 3), dtype=np.uint8)
     #POINTS = [(0,0,1), ]
+    if not point_cloud_array.empty():
+        POINTS = point_cloud_array.get()
+    
     for i in range(len(POINTS)):
         #colors[i][0] = 0.
         #colors[i][1] = 0.
@@ -52,7 +55,9 @@ def update_graph():
         graph_region.setData(pos=POINTS)
 
 
-def start_graph():
+def start_graph(points_q):
+    global POINTS, point_cloud_array
+    point_cloud_array = points_q
     print("Setting up graph")
     global app, graph_region, w, g, d3, t
     app = QtGui.QApplication([])
