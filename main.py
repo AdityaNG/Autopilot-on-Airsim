@@ -41,11 +41,22 @@ if not os.path.exists(os.path.dirname(logfilename)):
 # Open sim log file
 simfile = open(simfilename, 'w')
 # Launch the sim process
-proc = subprocess.Popen([args.executable, '-WINDOWED', '-ResX=640', '-ResY=480', '--settings', args.settings], stdout=simfile)
+airsim_proc = subprocess.Popen([args.executable, '-WINDOWED', '-ResX=640', '-ResY=480', '--settings', args.settings], stdout=simfile)
 
+global client
+connection_failed = True
+while connection_failed:
+    try:
+        client = airsim.CarClient()
+        client.confirmConnection()
+        connection_failed = False
+        print(". done", end="")
+    except:
+        connection_failed = True
+        time.sleep(1)
 # Wait for Airsim to launch
 # TODO : Replace wait with polling
-time.sleep(5)
+#time.sleep(5)
 
         
 def get_image(req, mode_name, camera_data):
@@ -97,8 +108,7 @@ def setup():
     global client
     # Connect to Airsim
     client = airsim.CarClient()
-    client.confirmConnection()
-
+    print("Connected Proceess : ", os.getpid())
 
 def image_loop(point_cloud_array):
     """
@@ -110,7 +120,6 @@ def image_loop(point_cloud_array):
     pp = pprint.PrettyPrinter(indent=4)
     client = airsim.CarClient()
     client.reset()
-    client.confirmConnection()
     client.enableApiControl(False)
     print("API Control enabled: %s" % client.isApiControlEnabled())
     car_controls = airsim.CarControls()
@@ -183,13 +192,13 @@ def image_loop(point_cloud_array):
 
 
 # Process to call images from the sim and process them to generate point_cloud_array
-p = Process(target=image_loop, args=(point_cloud_array, ))
-p.start()
+image_loop_proc = Process(target=image_loop, args=(point_cloud_array, ))
+image_loop_proc.start()
 
 # Start blocking start_graph call
 plotter.start_graph(point_cloud_array)
 
 # Once graph window is closed, kill the image_loop process
-# TODO : Replace kill with a gracefull end
-p.kill()
-proc.kill()
+
+os.killpg(os.getpgid(airsim_proc.pid), signal.SIGTERM)  # Send the signal to all the process groups
+os.killpg(os.getpgid(image_loop_proc.pid), signal.SIGTERM)

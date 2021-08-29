@@ -1,6 +1,7 @@
 {
   "SettingsVersion": 1.2,
   "SimMode": "Car",
+  "ViewMode": "NoDisplay",
   "Vehicles": {
     "PhysXCar": {
       "VehicleType": "PhysXCar",
@@ -217,9 +218,9 @@
     }
   },
   "SubWindows": [
-	{"WindowID": 0, "ImageType": 0, "CameraName": "3", "Visible": true},
-    {"WindowID": 1, "ImageType": 0, "CameraName": "1", "Visible": true},
-    {"WindowID": 2, "ImageType": 0, "CameraName": "2", "Visible": true}
+	{"WindowID": 0, "ImageType": 0, "CameraName": "0", "Visible": true},
+    {"WindowID": 1, "ImageType": 0, "CameraName": "1", "Visible": false},
+    {"WindowID": 2, "ImageType": 0, "CameraName": "2", "Visible": false}
   ],
   "Recording": {
     "RecordOnMove": false,
