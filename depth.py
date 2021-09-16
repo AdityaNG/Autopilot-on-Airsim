@@ -83,7 +83,7 @@ class monodepth2:
             input_image = input_image.resize((self.feed_width, self.feed_height), pil.LANCZOS)
             input_image = transforms.ToTensor()(input_image).unsqueeze(0)
 
-            start_time = time.time()
+            #start_time = time.time()
             # PREDICTION
             input_image = input_image.to(self.device)
             features = self.encoder(input_image)
@@ -93,9 +93,9 @@ class monodepth2:
             disp_resized = torch.nn.functional.interpolate(
                 disp, (original_height, original_width), mode="bilinear", align_corners=False)
 
-            end_time = time.time()
+            #end_time = time.time()
 
-            print("\t - {:.2f} ms".format((end_time - start_time)*1000))
+            #print("\t - {:.2f} ms".format((end_time - start_time)*1000))
 
             #disp_resized_np = disp_resized.squeeze().cpu().numpy()
             disp_resized_np = disp_resized.squeeze().cpu().detach().numpy()
@@ -127,7 +127,11 @@ if __name__=="__main__":
             #frame = cv2.imread('monodepth2/assets/test_image.jpg')
         
             # Display the resulting frame
+            start_time = time.time()
             depth = m.eval(frame)
+            end_time = time.time()
+
+            print("\t - {:.2f} ms".format((end_time - start_time)*1000))
             
             cv2.imwrite('./tmps/frame.png', frame)
             cv2.imwrite('./tmps/depth.png', depth)
