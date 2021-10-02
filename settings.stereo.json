@@ -1,0 +1,111 @@
+{
+  "SettingsVersion": 1.2,
+  "SimMode": "Car",
+  "ViewMode": "NoDisplay",
+  "Vehicles": {
+    "PhysXCar": {
+      "VehicleType": "PhysXCar",
+      "DefaultVehicleState": "",
+      "AutoCreate": true,
+      "PawnPath": "",
+      "EnableCollisionPassthrogh": false,
+      "EnableCollisions": true,
+      "RC": {
+        "RemoteControlID": -1
+      },
+      "Cameras": {   
+        "0": {
+			"CaptureSettings": [
+				{
+					"ImageType": 0,
+					"Width": 480,
+				  	"Height": 270,
+					"FOV_Degrees": 90
+				}
+				],
+				"X": 0.25,
+				"Y": -0.16,
+				"Z": -1.7,
+				"Pitch": 0.0,
+				"Roll": 0.0,
+				"Yaw": 0,
+			"NoiseSettings": [
+					{
+				"Enabled": false,
+				"ImageType": 0,
+
+				"RandContrib": 0.2,
+				"RandSpeed": 100000.0,
+				"RandSize": 500.0,
+				"RandDensity": 2,
+
+				"HorzWaveContrib":0.03,
+				"HorzWaveStrength": 0.08,
+				"HorzWaveVertSize": 1.0,
+				"HorzWaveScreenSize": 1.0,
+
+				"HorzNoiseLinesContrib": 1.0,
+				"HorzNoiseLinesDensityY": 0.01,
+				"HorzNoiseLinesDensityXY": 0.5,
+
+				"HorzDistortionContrib": 1.0,
+				"HorzDistortionStrength": 0.002
+				}
+				]
+        },
+        "1": {
+			"CaptureSettings": [
+				{
+				  "ImageType": 0,
+				  "Width": 480,
+				  "Height": 270,
+				  "FOV_Degrees": 90
+				}
+			  ],
+			  "X": 0.25,
+			  "Y": 0.16,
+			  "Z": -1.7,
+			  "Pitch": 0.0,
+			  "Roll": 0.0,
+			  "Yaw": 0.0,
+			"NoiseSettings": [
+					{
+				"Enabled": false,
+				"ImageType": 0,
+
+				"RandContrib": 0.2,
+				"RandSpeed": 100000.0,
+				"RandSize": 500.0,
+				"RandDensity": 2,
+
+				"HorzWaveContrib":0.03,
+				"HorzWaveStrength": 0.08,
+				"HorzWaveVertSize": 1.0,
+				"HorzWaveScreenSize": 1.0,
+
+				"HorzNoiseLinesContrib": 1.0,
+				"HorzNoiseLinesDensityY": 0.01,
+				"HorzNoiseLinesDensityXY": 0.5,
+
+				"HorzDistortionContrib": 1.0,
+				"HorzDistortionStrength": 0.002
+				}
+			]
+        }        
+      }
+    }
+  },
+  "SubWindows": [
+	{"WindowID": 0, "ImageType": 0, "CameraName": "0", "Visible": true},
+    {"WindowID": 1, "ImageType": 0, "CameraName": "1", "Visible": true}
+  ],
+  "Recording": {
+    "RecordOnMove": false,
+    "RecordInterval": 0.05,
+    "Cameras": [
+		{ "CameraName": "0", "ImageType": 5, "PixelsAsFloat": false, "Compress": false },
+		{ "CameraName": "1", "ImageType": 5, "PixelsAsFloat": false, "Compress": false }
+    ]
+  }
+}
+

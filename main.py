@@ -1,3 +1,4 @@
+from glob import glob
 import airsim
 import cv2
 import numpy as np
@@ -16,15 +17,18 @@ import matplotlib.pyplot as plt
 from multiprocessing import Process, Array, Pool, Queue
 import ctypes
 
+from stereo_vision import stereo_vision
+from manydepth  import manydepth
+
 IMAGE_SHAPE = (144,256,3)
 
 point_cloud_array = Queue()
 
 parser = argparse.ArgumentParser()
-parser.add_argument('-c', '--camera_list', nargs='+', default=['0', '1', '2', '3', '4'], help='List of cameras visualised : [0, 1, ... , 4]')
+parser.add_argument('-c', '--camera_list', nargs='+', default=['0', '1'], help='List of cameras visualised : [0, 1, ... , 4]')
 parser.add_argument('-v', '--view_list', nargs='+', default=['0', '3', '5'], help='List of cameras visualised : [0, 1, ... , 6]')
 parser.add_argument('-exe', '--executable', type=str, default=os.path.abspath(os.path.join(os.getenv("HOME"), "Apps/AirSimNH_1.4.0/LinuxNoEditor/AirSimNH.sh")), help='Path to Airshim.sh')
-parser.add_argument('-s', '--settings', type=str, default=os.path.abspath(os.path.join(os.getenv("HOME"), "Autopilot/settings.json")), help='Path to Airshim settings.json')
+parser.add_argument('-s', '--settings', type=str, default=os.path.abspath(os.path.join(os.getenv("HOME"), "Autopilot/settings.stereo.json")), help='Path to Airshim settings.json')
 args = parser.parse_args()
 
 # Logging the data to disk
@@ -66,8 +70,18 @@ def get_image(req, mode_name, camera_data):
        Called with themultiprocessing.Pool as a batch
     """
     global client
+    points_rt = None
     responses = client.simGetImages(requests=[req])
     response = responses[0]
+
+    p_mat = np.array(camera_data[response.camera_name].proj_mat.matrix)
+    Quat = camera_data[response.camera_name].pose.orientation
+    Quat = [Quat.w_val, Quat.x_val, Quat.y_val, Quat.z_val ]
+        
+    R_mat = np.array(quaternion_rotation_matrix(Quat))
+    T_mat = camera_data[response.camera_name].pose.position
+    T_mat = np.array([T_mat.x_val, T_mat.y_val, T_mat.z_val] )
+
     if response.pixels_as_float:
         depth = np.array(response.image_data_float, dtype=np.float32)
         depth = depth.reshape(response.height, response.width)
@@ -79,14 +93,8 @@ def get_image(req, mode_name, camera_data):
         img = img.reshape(response.height, response.width, 3)
 
     if mode_name[response.image_type] == 'DepthVis':
-        p_mat = np.array(camera_data[response.camera_name].proj_mat.matrix)
-        Quat = camera_data[response.camera_name].pose.orientation
-        Quat = [Quat.w_val, Quat.x_val, Quat.y_val, Quat.z_val ]
         
-        R_mat = np.array(quaternion_rotation_matrix(Quat))
-        T_mat = camera_data[response.camera_name].pose.position
-        T_mat = np.array([T_mat.x_val, T_mat.y_val, T_mat.z_val] )
-        points = cv2.reprojectImageTo3D(depth, p_mat)
+        #points = cv2.reprojectImageTo3D(depth, p_mat)
         points = cv2.reprojectImageTo3D(img, p_mat)
         points = np.array([p for r in points for p in r])
 
@@ -95,8 +103,23 @@ def get_image(req, mode_name, camera_data):
             p = points[i]
             points_rt[i] = R_mat.dot(p) + T_mat
 
-        return points_rt, img, response.camera_name, response.image_type
-    return None, img, response.camera_name, response.image_type
+    """
+    elif mode_name[response.image_type] == 'Scene':
+        if prev_frame != type(None):
+            depth = md.eval(img, prev_frame)
+            
+            #points = cv2.reprojectImageTo3D(depth, p_mat)
+            points = cv2.reprojectImageTo3D(img, p_mat)
+            points = np.array([p for r in points for p in r])
+
+            points_rt = np.zeros(shape=points.shape)
+            for i in range(len(points)):
+                p = points[i]
+                points_rt[i] = R_mat.dot(p) + T_mat
+        prev_frame = img.copy()
+    """
+
+    return points_rt, img, response.camera_name, response.image_type
 
 
 def setup():
@@ -108,7 +131,10 @@ def setup():
     global client
     # Connect to Airsim
     client = airsim.CarClient()
+
+
     print("Connected Proceess : ", os.getpid())
+
 
 def image_loop(point_cloud_array):
     """
@@ -116,6 +142,12 @@ def image_loop(point_cloud_array):
         point_cloud_array is a multiprocessing.Queue() object
         The new point cloud gets pushed onto the Queue
     """
+    global sv
+    # Stereo vision object
+    #sv = stereo_vision(width=480, height=270, defaultCalibFile=False, CAMERA_CALIBRATION_YAML="calibration/fsds.yml", objectTracking=False, display=True, graphics=False, scale=1, pc_extrapolation=False)
+
+    md = manydepth()
+
     white_bg = np.zeros((144,256,3))
     pp = pprint.PrettyPrinter(indent=4)
     client = airsim.CarClient()
@@ -133,11 +165,8 @@ def image_loop(point_cloud_array):
         #pp.pprint(camera_info)
 
     cam_name = {
-            '0': 'Front',
-            '1': 'Back',
-            '2': 'Right',
-            '3': 'Left',
-            '4': 'FrontLR',
+        '0': 'FrontL',
+        '1': 'FrontR'
     }
     mode_name = {
             0: 'Scene', 
@@ -151,19 +180,22 @@ def image_loop(point_cloud_array):
 
     reqs = [] # List of requests for images
     axi = {}  # dict of subplots
+    plots_height = len(args.camera_list)
+    plots_width = len(args.view_list) + 1
     for ind in range(len(args.camera_list)):
         i = args.camera_list[ind]
         axi.setdefault(i, {})
         for j, v in enumerate(args.view_list):
             m = mode_name[int(v)]
             #axi[i].setdefault(m, {})
-            axi[i][int(v)] = plt.subplot(len(args.camera_list), len(args.view_list), len(args.view_list)*ind +j+1)    
+            axi[i][int(v)] = plt.subplot(plots_height, plots_width, plots_width*ind +j+1)    
             axi[i][int(v)].title.set_text(cam_name[i] + '_' + m)
             as_float = False
             if m == 'DepthVis':
                 as_float = True
             reqs.append(airsim.ImageRequest(i, int(v), as_float, False))
-    
+        axi[i][4] = plt.subplot(plots_height, plots_width, plots_width*ind +j+2)    
+        axi[i][4].title.set_text(cam_name[i] + '_Manydepth')
     # Argument list for each get_image
     args_list = []
     for r in reqs:
@@ -175,6 +207,8 @@ def image_loop(point_cloud_array):
         plt.ion()
         plt.show(block=False)
 
+        prev_frame = {}
+
         while True:
             #for cam in axi: for type in axi[cam]: axi[cam][type].imshow(white_bg)
             results = pool.starmap(get_image, args_list)
@@ -185,9 +219,24 @@ def image_loop(point_cloud_array):
 
                 if camera_name in args.camera_list:
                     axi[camera_name][int(image_type)].imshow(img)
+                    if mode_name[image_type] == 'Scene':
+                        prev_frame.setdefault(camera_name, None)
+                        
+                        # Manydepth disparity generation
+                        if type(prev_frame[camera_name]) != type(None):
+                            depth = md.eval(img, prev_frame[camera_name])
+                            axi[camera_name][4].imshow(depth) 
+            
+                        axi[camera_name][int(image_type)].imshow(img)
+                        prev_frame[camera_name] = img
+                    else:
+                        axi[camera_name][int(image_type)].imshow(img)
                     
+
             plt.pause(0.001)
+            
             # Send the points to the queue
+            #point_cloud_array.put(points_sv)
             point_cloud_array.put(final_points)
 
 

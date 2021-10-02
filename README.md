@@ -2,15 +2,12 @@
 
 ![Camera Demo](/gifs/cams.gif)
 
-Current setup involves 5 cameras. Four of them being 120 deg wide angle for short range sensing and one narrow FOV front facing camera for long range sensing.
+Stereo experiment involves 2 cameras. Goal of the experiment is to use monodepth, monodepth2, manydepth and other self-supervised disparity estimation techniques to show that the respective networks can improve on unseen data during runtime as new data comes in.
 
 | Cam | ROI                | FOV | x     | y     | z    | yaw |
 |-----|--------------------|-----|-------|-------|------|-----|
-| 0   | Front, Short range | 120 | 0.25  | 0     | -1.7 | 0   |
-| 1   | Back               | 120 | -1.25 | 0     | -1.7 | 180 |
-| 2   | Right              | 120 | -0.8  | 0.45  | -1.7 | 90  |
-| 3   | Left               | 120 | -0.8  | -0.45 | -1.7 | -90 |
-| 4   | Front, Long Range  | 45  | 0.25  | 0     | -1.7 | 0   |
+| 0   | FrontL             | 90  | 0.25  | -0.16 | -1.7 | 0   |
+| 1   | FrontR             | 90  | -1.25 | 0.16  | -1.7 | 180 |
 
 
 # Getting Started 
@@ -18,6 +15,8 @@ Current setup involves 5 cameras. Four of them being 120 deg wide angle for shor
 ## Download Airsim
 
 Download the Airsim 1.4.0 binaries from github : https://github.com/microsoft/AirSim/releases/tag/v1.4.0-linux
+
+The latest 1.5.0 binaries are buggy.
 
 
 ## Setting up Python env
@@ -28,11 +27,20 @@ The environment involes installing the headless version of OpenCV as the normal 
 source ~/auto/bin/activate
 ```
 
-## Launching Airsim
+## Launching the Project
 
-First cd into the downloaded folder. Then execute while pointing to the full path of the settings.json within this project
+The `main.py` will start the sim and the rendering software as multiple processes
 
 ```
-cd ~/Apps/AirSimNH_1.4.0/LinuxNoEditor
-./AirSimNH.sh -WINDOWED -ResX=640 -ResY=480 --settings /home/aditya/Autopilot/settings.json
+python main.py
+```
+
+## Install PyTorch with CUDA
+
+Refer to the official website for details
+
+https://pytorch.org/get-started/locally/
+
+```bash
+pip3 install torch==1.9.1+cu111 torchvision==0.10.1+cu111 torchaudio==0.9.1 -f https://download.pytorch.org/whl/torch_stable.html
 ```
