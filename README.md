@@ -1,13 +1,11 @@
 # Camera Setup
 
-![Camera Demo](/gifs/cams.gif)
-
 Stereo experiment involves 2 cameras. Goal of the experiment is to use monodepth, monodepth2, manydepth and other self-supervised disparity estimation techniques to show that the respective networks can improve on unseen data during runtime as new data comes in.
 
 | Cam | ROI                | FOV | x     | y     | z    | yaw |
 |-----|--------------------|-----|-------|-------|------|-----|
 | 0   | FrontL             | 90  | 0.25  | -0.16 | -1.7 | 0   |
-| 1   | FrontR             | 90  | -1.25 | 0.16  | -1.7 | 180 |
+| 1   | FrontR             | 90  | -1.25 | 0.16  | -1.7 | 0   |
 
 
 # Getting Started 
