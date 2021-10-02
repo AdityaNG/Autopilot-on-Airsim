@@ -5,7 +5,7 @@ Stereo experiment involves 2 cameras. Goal of the experiment is to use monodepth
 | Cam | ROI                | FOV | x     | y     | z    | yaw |
 |-----|--------------------|-----|-------|-------|------|-----|
 | 0   | FrontL             | 90  | 0.25  | -0.16 | -1.7 | 0   |
-| 1   | FrontR             | 90  | -1.25 | 0.16  | -1.7 | 0   |
+| 1   | FrontR             | 90  | 0.25  | 0.16  | -1.7 | 0   |
 
 
 # Getting Started 
