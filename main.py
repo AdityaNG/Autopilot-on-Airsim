@@ -19,13 +19,15 @@ import ctypes
 
 from stereo_vision import stereo_vision
 from manydepth  import manydepth
+from monodepth2  import monodepth2
+
 
 IMAGE_SHAPE = (144,256,3)
 
 point_cloud_array = Queue()
 
 parser = argparse.ArgumentParser()
-parser.add_argument('-c', '--camera_list', nargs='+', default=['0', '1'], help='List of cameras visualised : [0, 1, ... , 4]')
+parser.add_argument('-c', '--camera_list', nargs='+', default=['0', '1'], help='List of cameras visualised : [0, 1]')
 parser.add_argument('-v', '--view_list', nargs='+', default=['0', '3', '5'], help='List of cameras visualised : [0, 1, ... , 6]')
 parser.add_argument('-exe', '--executable', type=str, default=os.path.abspath(os.path.join(os.getenv("HOME"), "Apps/AirSimNH_1.4.0/LinuxNoEditor/AirSimNH.sh")), help='Path to Airshim.sh')
 parser.add_argument('-s', '--settings', type=str, default=os.path.abspath(os.path.join(os.getenv("HOME"), "Autopilot/settings.stereo.json")), help='Path to Airshim settings.json')
@@ -147,6 +149,8 @@ def image_loop(point_cloud_array):
     #sv = stereo_vision(width=480, height=270, defaultCalibFile=False, CAMERA_CALIBRATION_YAML="calibration/fsds.yml", objectTracking=False, display=True, graphics=False, scale=1, pc_extrapolation=False)
 
     md = manydepth()
+    monod = monodepth2()
+
 
     white_bg = np.zeros((144,256,3))
     pp = pprint.PrettyPrinter(indent=4)
@@ -181,7 +185,7 @@ def image_loop(point_cloud_array):
     reqs = [] # List of requests for images
     axi = {}  # dict of subplots
     plots_height = len(args.camera_list)
-    plots_width = len(args.view_list) + 1
+    plots_width = len(args.view_list) + 2
     for ind in range(len(args.camera_list)):
         i = args.camera_list[ind]
         axi.setdefault(i, {})
@@ -194,8 +198,11 @@ def image_loop(point_cloud_array):
             if m == 'DepthVis':
                 as_float = True
             reqs.append(airsim.ImageRequest(i, int(v), as_float, False))
-        axi[i][4] = plt.subplot(plots_height, plots_width, plots_width*ind +j+2)    
-        axi[i][4].title.set_text(cam_name[i] + '_Manydepth')
+        axi[i][plots_width+1] = plt.subplot(plots_height, plots_width, plots_width*ind +j+2)    
+        axi[i][plots_width+1].title.set_text(cam_name[i] + '_Manydepth')
+
+        axi[i][plots_width+2] = plt.subplot(plots_height, plots_width, plots_width*ind +j+2)    
+        axi[i][plots_width+2].title.set_text(cam_name[i] + '_Monodepth2')
     # Argument list for each get_image
     args_list = []
     for r in reqs:
@@ -225,7 +232,10 @@ def image_loop(point_cloud_array):
                         # Manydepth disparity generation
                         if type(prev_frame[camera_name]) != type(None):
                             depth = md.eval(img, prev_frame[camera_name])
-                            axi[camera_name][4].imshow(depth) 
+                            monodepth2_depth = monod.eval(img)
+                            
+                            axi[camera_name][plots_width+1].imshow(depth) 
+                            axi[camera_name][plots_width+2].imshow(monodepth2_depth) 
             
                         axi[camera_name][int(image_type)].imshow(img)
                         prev_frame[camera_name] = img

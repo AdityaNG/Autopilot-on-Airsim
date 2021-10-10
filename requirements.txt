@@ -17,3 +17,4 @@ requests==2.26.0
 tqdm==4.62.3
 git+https://github.com/AdityaNG/Depth-Perception-from-Stereoscopic-Vision-on-Edge-Devices.git
 git+https://github.com/AdityaNG/manydepth@pip-module
+git+https://github.com/AdityaNG/monodepth2@pip-module
