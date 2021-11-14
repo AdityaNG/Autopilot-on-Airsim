@@ -201,7 +201,7 @@ def image_loop(point_cloud_array):
         axi[i][plots_width+1] = plt.subplot(plots_height, plots_width, plots_width*ind +j+2)    
         axi[i][plots_width+1].title.set_text(cam_name[i] + '_Manydepth')
 
-        axi[i][plots_width+2] = plt.subplot(plots_height, plots_width, plots_width*ind +j+2)    
+        axi[i][plots_width+2] = plt.subplot(plots_height, plots_width, plots_width*ind +j+3)    
         axi[i][plots_width+2].title.set_text(cam_name[i] + '_Monodepth2')
     # Argument list for each get_image
     args_list = []
