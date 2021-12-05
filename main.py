@@ -13,6 +13,8 @@ import subprocess
 from autopilot_utils import *
 from datetime import datetime
 import signal
+import matplotlib as mpl
+import matplotlib.cm as cm
 import matplotlib.pyplot as plt
 from multiprocessing import Process, Array, Pool, Queue
 import ctypes
@@ -28,8 +30,9 @@ point_cloud_array = Queue()
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-c', '--camera_list', nargs='+', default=['0', '1'], help='List of cameras visualised : [0, 1]')
-parser.add_argument('-v', '--view_list', nargs='+', default=['3', ], help='List of cameras visualised : [0, 1, ... , 6]')
-parser.add_argument('-exe', '--executable', type=str, default=os.path.abspath(os.path.join(os.getenv("HOME"), "Apps/AirSimNH_1.4.0/LinuxNoEditor/AirSimNH.sh")), help='Path to Airshim.sh')
+parser.add_argument('-v', '--view_list', nargs='+', default=['3'], help='List of cameras visualised : [0, 1, ... , 6]')
+#parser.add_argument('-exe', '--executable', type=str, default=os.path.abspath(os.path.join(os.getenv("HOME"), "Apps/AirSimNH_1.4.0/LinuxNoEditor/AirSimNH.sh")), help='Path to Airshim.sh')
+parser.add_argument('-exe', '--executable', type=str, default=os.path.abspath(os.path.join(os.getenv("HOME"), "Apps/AirSimNH_1.6.0/LinuxNoEditor/AirSimNH.sh")), help='Path to Airshim.sh')
 parser.add_argument('-s', '--settings', type=str, default=os.path.abspath(os.path.join(os.getenv("HOME"), "Autopilot/settings.stereo.json")), help='Path to Airshim settings.stereo.json')
 args = parser.parse_args()
 
@@ -95,15 +98,24 @@ def get_image(req, mode_name, camera_data):
         img = img.reshape(response.height, response.width, 3)
 
     if mode_name[response.image_type] == 'DepthVis':
+
+        p_mat = np.array([
+            [959.779968, 0.000000, 959.290331, 0.000000],
+            [0.000000, 959.867798, 539.535675, 0.000000],
+            [0.000000, 0.000000, 1.000000, 0.000000],
+            [0.000000, 0.000000, 0.000000, 1.000000]
+        ])
         
         #points = cv2.reprojectImageTo3D(depth, p_mat)
         points = cv2.reprojectImageTo3D(img, p_mat)
-        points = np.array([p for r in points for p in r])
+        points_rt = np.array([p for r in points for p in r])
 
+        """
         points_rt = np.zeros(shape=points.shape)
         for i in range(len(points)):
             p = points[i]
             points_rt[i] = R_mat.dot(p) + T_mat
+        # """
 
     """
     elif mode_name[response.image_type] == 'Scene':
@@ -179,7 +191,8 @@ def image_loop(point_cloud_array):
             3: 'DepthVis', 
             4: 'DisparityNormalized',
             5: 'Segmentation',
-            6: 'SurfaceNormals'
+            6: 'SurfaceNormals',
+            7: 'Infrared'
     }
 
     reqs = [] # List of requests for images
@@ -223,20 +236,38 @@ def image_loop(point_cloud_array):
             #for cam in axi: for type in axi[cam]: axi[cam][type].imshow(white_bg)
             results = pool.starmap(get_image, args_list)
             final_points = np.array([[0, 0, 0], ])
+
             for points_rt, img, camera_name, image_type in results:
                 if type(points_rt) == np.ndarray:
+                    print("points_rt")
+                    print(points_rt)
                     final_points = np.concatenate((final_points, points_rt), )
 
                 if camera_name in args.camera_list:
                     if str(image_type) in args.view_list:
-                        axi[camera_name][int(image_type)].imshow(img)
+                        if mode_name[image_type] == 'DepthVis':
+                            #axi[camera_name][int(image_type)].imshow(img, cmap='viridis')
+                            disp_resized_np = img
+                            vmax = np.percentile(disp_resized_np, 95)
+                            normalizer = mpl.colors.Normalize(vmin=disp_resized_np.min(), vmax=vmax)
+                            mapper = cm.ScalarMappable(norm=normalizer, cmap='magma_r')
+                            colormapped_im = (mapper.to_rgba(disp_resized_np)[:, :, :3] * 255).astype(np.uint8)
+                            #axi[camera_name][int(image_type)].imshow(colormapped_im, cmap='plasma_r')
+                            axi[camera_name][int(image_type)].imshow(colormapped_im)
+                        elif mode_name[image_type] == 'Infrared':
+                            print('Infrared')
+                            img_grey = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+                            print(img_grey.shape)
+                            axi[camera_name][int(image_type)].imshow(img_grey, cmap='magma')
+                        else:
+                            axi[camera_name][int(image_type)].imshow(img)
                     
                     if mode_name[image_type] == 'Scene':
                         # RBD image, feed it to the NN Model
-                        
+
                         prev_frame.setdefault(camera_name, None)
                         
-                        # Manydepth disparity generation
+                        # Disparity generation
                         if type(prev_frame[camera_name]) != type(None):
                             depth = depth_nn.eval(img)
                             

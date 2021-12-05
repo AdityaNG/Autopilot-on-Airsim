@@ -24,34 +24,11 @@
 				}
 				],
 				"X": 0.25,
-				"Y": -0.16,
+				"Y": -0.1,
 				"Z": -1.7,
 				"Pitch": 0.0,
 				"Roll": 0.0,
-				"Yaw": 0,
-			"NoiseSettings": [
-					{
-				"Enabled": false,
-				"ImageType": 0,
-
-				"RandContrib": 0.2,
-				"RandSpeed": 100000.0,
-				"RandSize": 500.0,
-				"RandDensity": 2,
-
-				"HorzWaveContrib":0.03,
-				"HorzWaveStrength": 0.08,
-				"HorzWaveVertSize": 1.0,
-				"HorzWaveScreenSize": 1.0,
-
-				"HorzNoiseLinesContrib": 1.0,
-				"HorzNoiseLinesDensityY": 0.01,
-				"HorzNoiseLinesDensityXY": 0.5,
-
-				"HorzDistortionContrib": 1.0,
-				"HorzDistortionStrength": 0.002
-				}
-				]
+				"Yaw": 0
         },
         "1": {
 			"CaptureSettings": [
@@ -63,34 +40,11 @@
 				}
 			  ],
 			  "X": 0.25,
-			  "Y": 0.16,
+			  "Y": 0.1,
 			  "Z": -1.7,
 			  "Pitch": 0.0,
 			  "Roll": 0.0,
-			  "Yaw": 0.0,
-			"NoiseSettings": [
-					{
-				"Enabled": false,
-				"ImageType": 0,
-
-				"RandContrib": 0.2,
-				"RandSpeed": 100000.0,
-				"RandSize": 500.0,
-				"RandDensity": 2,
-
-				"HorzWaveContrib":0.03,
-				"HorzWaveStrength": 0.08,
-				"HorzWaveVertSize": 1.0,
-				"HorzWaveScreenSize": 1.0,
-
-				"HorzNoiseLinesContrib": 1.0,
-				"HorzNoiseLinesDensityY": 0.01,
-				"HorzNoiseLinesDensityXY": 0.5,
-
-				"HorzDistortionContrib": 1.0,
-				"HorzDistortionStrength": 0.002
-				}
-			]
+			  "Yaw": 0.0
         }        
       }
     }

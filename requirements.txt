@@ -1,4 +1,4 @@
-airsim==1.5.0
+airsim==1.6.0
 msgpack-python==0.5.6
 msgpack-rpc-python==0.4.1
 numpy==1.21.2
@@ -15,6 +15,6 @@ torch==1.5.1+cu101
 torchvision==0.6.1+cu101
 requests==2.26.0
 tqdm==4.62.3
+manydepth==1.0.0
+monodepth2==1.0.0
 git+https://github.com/AdityaNG/Depth-Perception-from-Stereoscopic-Vision-on-Edge-Devices.git
-git+https://github.com/AdityaNG/manydepth@pip-module
-git+https://github.com/AdityaNG/monodepth2@pip-module

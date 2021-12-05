@@ -25,34 +25,18 @@ calculated = False
 def update_graph():
     global graph_region, POINTS, point_cloud_array
     global min_height, max_height, colors, calculated, max_dist, min_dist, dist_range
-    colors = np.ones(shape=(len(POINTS), 3), dtype=np.uint8)
-    #POINTS = [(0,0,1), ]
+    
     if not point_cloud_array.empty():
         POINTS = point_cloud_array.get()
     
-    for i in range(len(POINTS)):
-        #colors[i][0] = 0.
-        #colors[i][1] = 0.
-        #colors[i][2] = 1.
-        pass
-        """
-        d = dist(POINTS[i], [0,0,0])
-        print(d)
-        if 30<d<45:
-            colors[i][0] = 0.
-            colors[i][1] = 0.
-            colors[i][2] = 1.
-        else:
-            colors[i][0] = 0.5
-            colors[i][1] = 0.5
-            colors[i][2] = 0.5
-            # print(POINTS[i])
-        """
-
+    #POINTS = [(0,0,1), ]
+    colors = np.ones(shape=(len(POINTS), 3), dtype=np.uint8)
     if len(POINTS)>0:
         POINTS = np.array(POINTS)
-        #graph_region.setData(pos=POINTS, color=colors)
-        graph_region.setData(pos=POINTS)
+        POINTS_scaled = POINTS / 10000.0
+        #print(POINTS)
+        graph_region.setData(pos=POINTS_scaled, color=colors)
+        #graph_region.setData(pos=POINTS)
 
 
 def start_graph(points_q):
@@ -76,7 +60,7 @@ def start_graph(points_q):
     w.addItem(graph_region)
     t = QtCore.QTimer()
     t.timeout.connect(update_graph)
-    t.start(50)
+    t.start(500)
 
     QtGui.QApplication.instance().exec_()
     print("\n[STOP]\tGraph Window closed. Stopping...")
