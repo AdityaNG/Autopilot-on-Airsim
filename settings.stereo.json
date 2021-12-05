@@ -18,8 +18,8 @@
 			"CaptureSettings": [
 				{
 					"ImageType": 0,
-					"Width": 480,
-				  	"Height": 270,
+					"Width": 1920,
+				  	"Height": 1080,
 					"FOV_Degrees": 90
 				}
 				],
@@ -57,8 +57,8 @@
 			"CaptureSettings": [
 				{
 				  "ImageType": 0,
-				  "Width": 480,
-				  "Height": 270,
+				  "Width": 1920,
+				  "Height": 1080,
 				  "FOV_Degrees": 90
 				}
 			  ],

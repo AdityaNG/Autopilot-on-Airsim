@@ -28,9 +28,9 @@ point_cloud_array = Queue()
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-c', '--camera_list', nargs='+', default=['0', '1'], help='List of cameras visualised : [0, 1]')
-parser.add_argument('-v', '--view_list', nargs='+', default=['0', '3', '5'], help='List of cameras visualised : [0, 1, ... , 6]')
+parser.add_argument('-v', '--view_list', nargs='+', default=['3', ], help='List of cameras visualised : [0, 1, ... , 6]')
 parser.add_argument('-exe', '--executable', type=str, default=os.path.abspath(os.path.join(os.getenv("HOME"), "Apps/AirSimNH_1.4.0/LinuxNoEditor/AirSimNH.sh")), help='Path to Airshim.sh')
-parser.add_argument('-s', '--settings', type=str, default=os.path.abspath(os.path.join(os.getenv("HOME"), "Autopilot/settings.stereo.json")), help='Path to Airshim settings.json')
+parser.add_argument('-s', '--settings', type=str, default=os.path.abspath(os.path.join(os.getenv("HOME"), "Autopilot/settings.stereo.json")), help='Path to Airshim settings.stereo.json')
 args = parser.parse_args()
 
 # Logging the data to disk
@@ -148,8 +148,8 @@ def image_loop(point_cloud_array):
     # Stereo vision object
     #sv = stereo_vision(width=480, height=270, defaultCalibFile=False, CAMERA_CALIBRATION_YAML="calibration/fsds.yml", objectTracking=False, display=True, graphics=False, scale=1, pc_extrapolation=False)
 
-    md = manydepth()
-    monod = monodepth2()
+    #md = manydepth()
+    depth_nn = monodepth2()
 
 
     white_bg = np.zeros((144,256,3))
@@ -185,7 +185,7 @@ def image_loop(point_cloud_array):
     reqs = [] # List of requests for images
     axi = {}  # dict of subplots
     plots_height = len(args.camera_list)
-    plots_width = len(args.view_list) + 2
+    plots_width = len(args.view_list) + 1
     for ind in range(len(args.camera_list)):
         i = args.camera_list[ind]
         axi.setdefault(i, {})
@@ -198,11 +198,14 @@ def image_loop(point_cloud_array):
             if m == 'DepthVis':
                 as_float = True
             reqs.append(airsim.ImageRequest(i, int(v), as_float, False))
-        axi[i][plots_width+1] = plt.subplot(plots_height, plots_width, plots_width*ind +j+2)    
-        axi[i][plots_width+1].title.set_text(cam_name[i] + '_Manydepth')
+        axi[i]['NN_Depth'] = plt.subplot(plots_height, plots_width, plots_width*ind +j+2)    
+        axi[i]['NN_Depth'].title.set_text(cam_name[i] + '_NN_depth')
 
-        axi[i][plots_width+2] = plt.subplot(plots_height, plots_width, plots_width*ind +j+3)    
-        axi[i][plots_width+2].title.set_text(cam_name[i] + '_Monodepth2')
+        if '0' not in args.view_list:
+            reqs.append(airsim.ImageRequest(i, 0, False, False))
+
+        #axi[i][plots_width+2] = plt.subplot(plots_height, plots_width, plots_width*ind +j+3)    
+        #axi[i][plots_width+2].title.set_text(cam_name[i] + '_Monodepth2')
     # Argument list for each get_image
     args_list = []
     for r in reqs:
@@ -225,22 +228,21 @@ def image_loop(point_cloud_array):
                     final_points = np.concatenate((final_points, points_rt), )
 
                 if camera_name in args.camera_list:
-                    axi[camera_name][int(image_type)].imshow(img)
+                    if str(image_type) in args.view_list:
+                        axi[camera_name][int(image_type)].imshow(img)
+                    
                     if mode_name[image_type] == 'Scene':
+                        # RBD image, feed it to the NN Model
+                        
                         prev_frame.setdefault(camera_name, None)
                         
                         # Manydepth disparity generation
                         if type(prev_frame[camera_name]) != type(None):
-                            depth = md.eval(img, prev_frame[camera_name])
-                            monodepth2_depth = monod.eval(img)
+                            depth = depth_nn.eval(img)
                             
-                            axi[camera_name][plots_width+1].imshow(depth) 
-                            axi[camera_name][plots_width+2].imshow(monodepth2_depth) 
+                            axi[camera_name]['NN_Depth'].imshow(depth) 
             
-                        axi[camera_name][int(image_type)].imshow(img)
                         prev_frame[camera_name] = img
-                    else:
-                        axi[camera_name][int(image_type)].imshow(img)
                     
 
             plt.pause(0.001)
