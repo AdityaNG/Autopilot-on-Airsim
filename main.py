@@ -29,11 +29,14 @@ IMAGE_SHAPE = (144,256,3)
 point_cloud_array = Queue()
 
 parser = argparse.ArgumentParser()
-parser.add_argument('-c', '--camera_list', nargs='+', default=['0', '1'], help='List of cameras visualised : [0, 1]')
-parser.add_argument('-v', '--view_list', nargs='+', default=['3'], help='List of cameras visualised : [0, 1, ... , 6]')
+parser.add_argument('-c', '--camera_list', nargs='+', default=['0', ], help='List of cameras visualised : [0, 1]')
+parser.add_argument('-v', '--view_list', nargs='+', default=['0', '7'], help='List of cameras visualised : [0, 1, ... , 6]')
 #parser.add_argument('-exe', '--executable', type=str, default=os.path.abspath(os.path.join(os.getenv("HOME"), "Apps/AirSimNH_1.4.0/LinuxNoEditor/AirSimNH.sh")), help='Path to Airshim.sh')
 parser.add_argument('-exe', '--executable', type=str, default=os.path.abspath(os.path.join(os.getenv("HOME"), "Apps/AirSimNH_1.6.0/LinuxNoEditor/AirSimNH.sh")), help='Path to Airshim.sh')
 parser.add_argument('-s', '--settings', type=str, default=os.path.abspath(os.path.join(os.getenv("HOME"), "Autopilot/settings.stereo.json")), help='Path to Airshim settings.stereo.json')
+
+parser.add_argument('-n', '--no_exec', action='store_true', help='Flag to execute ONLY the simulator')
+
 args = parser.parse_args()
 
 # Logging the data to disk
@@ -97,6 +100,7 @@ def get_image(req, mode_name, camera_data):
         img = np.frombuffer(img, dtype=np.uint8)
         img = img.reshape(response.height, response.width, 3)
 
+    #if mode_name[response.image_type] == 'DepthVis':
     if mode_name[response.image_type] == 'DepthVis':
 
         p_mat = np.array([
@@ -285,10 +289,12 @@ def image_loop(point_cloud_array):
 
 # Process to call images from the sim and process them to generate point_cloud_array
 image_loop_proc = Process(target=image_loop, args=(point_cloud_array, ))
-image_loop_proc.start()
-
-# Start blocking start_graph call
-plotter.start_graph(point_cloud_array)
+if not args.no_exec:
+    image_loop_proc.start()
+    # Start blocking start_graph call
+    plotter.start_graph(point_cloud_array)
+else:
+    input("Press enter to quit")
 
 # Once graph window is closed, kill the image_loop process
 

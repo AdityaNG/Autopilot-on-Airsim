@@ -1,7 +1,6 @@
 {
   "SettingsVersion": 1.2,
   "SimMode": "Car",
-  "ViewMode": "NoDisplay",
   "Vehicles": {
     "PhysXCar": {
       "VehicleType": "PhysXCar",
@@ -21,6 +20,18 @@
 					"Width": 1920,
 				  	"Height": 1080,
 					"FOV_Degrees": 90
+				},
+				{
+					"ImageType": 1,
+					"Width": 1920,
+				  	"Height": 1080,
+					"FOV_Degrees": 90
+				},
+				{
+					"ImageType": 7,
+					"Width": 1920,
+				  	"Height": 1080,
+					"FOV_Degrees": 90
 				}
 				],
 				"X": 0.25,
@@ -33,10 +44,22 @@
         "1": {
 			"CaptureSettings": [
 				{
-				  "ImageType": 0,
-				  "Width": 1920,
-				  "Height": 1080,
-				  "FOV_Degrees": 90
+					"ImageType": 0,
+					"Width": 1920,
+				  	"Height": 1080,
+					"FOV_Degrees": 90
+				},
+				{
+					"ImageType": 1,
+					"Width": 1920,
+				  	"Height": 1080,
+					"FOV_Degrees": 90
+				},
+				{
+					"ImageType": 7,
+					"Width": 1920,
+				  	"Height": 1080,
+					"FOV_Degrees": 90
 				}
 			  ],
 			  "X": 0.25,
@@ -51,14 +74,15 @@
   },
   "SubWindows": [
 	{"WindowID": 0, "ImageType": 0, "CameraName": "0", "Visible": true},
-    {"WindowID": 1, "ImageType": 0, "CameraName": "1", "Visible": true}
+    {"WindowID": 1, "ImageType": 7, "CameraName": "0", "Visible": true}
   ],
   "Recording": {
     "RecordOnMove": false,
     "RecordInterval": 0.05,
     "Cameras": [
-		{ "CameraName": "0", "ImageType": 5, "PixelsAsFloat": false, "Compress": false },
-		{ "CameraName": "1", "ImageType": 5, "PixelsAsFloat": false, "Compress": false }
+		{ "CameraName": "0", "ImageType": 0, "PixelsAsFloat": false, "Compress": false },
+		{ "CameraName": "0", "ImageType": 1, "PixelsAsFloat": false, "Compress": false },
+		{ "CameraName": "0", "ImageType": 7, "PixelsAsFloat": false, "Compress": false }
     ]
   }
 }
