@@ -33,7 +33,8 @@ def update_graph():
     colors = np.ones(shape=(len(POINTS), 3), dtype=np.uint8)
     if len(POINTS)>0:
         POINTS = np.array(POINTS)
-        POINTS_scaled = POINTS / 10000.0
+        #POINTS_scaled = POINTS / 10000.0
+        POINTS_scaled = POINTS
         #print(POINTS)
         graph_region.setData(pos=POINTS_scaled, color=colors)
         #graph_region.setData(pos=POINTS)

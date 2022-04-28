@@ -1,14 +1,18 @@
 from glob import glob
+import os
+import sys
+sys.path.append("/home/aditya/AirSim/PythonClient/")
+
 import airsim
 import cv2
 import numpy as np
-import os
+
 import time
 import math
 import pprint
 import argparse
 import threading
-import plotter
+
 import subprocess
 from autopilot_utils import *
 from datetime import datetime
@@ -30,7 +34,7 @@ point_cloud_array = Queue()
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-c', '--camera_list', nargs='+', default=['0', ], help='List of cameras visualised : [0, 1]')
-parser.add_argument('-v', '--view_list', nargs='+', default=['0', '7'], help='List of cameras visualised : [0, 1, ... , 6]')
+parser.add_argument('-v', '--view_list', nargs='+', default=['0', '4', '7'], help='List of cameras visualised : [0, 1, ... , 6]')
 #parser.add_argument('-exe', '--executable', type=str, default=os.path.abspath(os.path.join(os.getenv("HOME"), "Apps/AirSimNH_1.4.0/LinuxNoEditor/AirSimNH.sh")), help='Path to Airshim.sh')
 parser.add_argument('-exe', '--executable', type=str, default=os.path.abspath(os.path.join(os.getenv("HOME"), "Apps/AirSimNH_1.6.0/LinuxNoEditor/AirSimNH.sh")), help='Path to Airshim.sh')
 parser.add_argument('-s', '--settings', type=str, default=os.path.abspath(os.path.join(os.getenv("HOME"), "Autopilot/settings.stereo.json")), help='Path to Airshim settings.stereo.json')
@@ -93,7 +97,8 @@ def get_image(req, mode_name, camera_data):
     if response.pixels_as_float:
         depth = np.array(response.image_data_float, dtype=np.float32)
         depth = depth.reshape(response.height, response.width)
-        img = np.array(depth * 255, dtype=np.uint8)
+        #img = np.array(depth * 255, dtype=np.uint8)
+        img = np.array(depth * 255, dtype=np.float32)
 
     else:
         img = response.image_data_uint8
@@ -101,9 +106,9 @@ def get_image(req, mode_name, camera_data):
         img = img.reshape(response.height, response.width, 3)
 
     #if mode_name[response.image_type] == 'DepthVis':
-    if mode_name[response.image_type] == 'DepthVis':
+    if mode_name[response.image_type] == 'DisparityNormalized':
 
-        p_mat = np.array([
+        p_mat_2 = np.array([
             [959.779968, 0.000000, 959.290331, 0.000000],
             [0.000000, 959.867798, 539.535675, 0.000000],
             [0.000000, 0.000000, 1.000000, 0.000000],
@@ -212,7 +217,7 @@ def image_loop(point_cloud_array):
             axi[i][int(v)] = plt.subplot(plots_height, plots_width, plots_width*ind +j+1)    
             axi[i][int(v)].title.set_text(cam_name[i] + '_' + m)
             as_float = False
-            if m == 'DepthVis':
+            if m == 'DepthVis' or m == 'DisparityNormalized':
                 as_float = True
             reqs.append(airsim.ImageRequest(i, int(v), as_float, False))
         axi[i]['NN_Depth'] = plt.subplot(plots_height, plots_width, plots_width*ind +j+2)    
@@ -249,7 +254,7 @@ def image_loop(point_cloud_array):
 
                 if camera_name in args.camera_list:
                     if str(image_type) in args.view_list:
-                        if mode_name[image_type] == 'DepthVis':
+                        if mode_name[image_type] == 'DisparityNormalized':
                             #axi[camera_name][int(image_type)].imshow(img, cmap='viridis')
                             disp_resized_np = img
                             vmax = np.percentile(disp_resized_np, 95)
@@ -259,8 +264,11 @@ def image_loop(point_cloud_array):
                             #axi[camera_name][int(image_type)].imshow(colormapped_im, cmap='plasma_r')
                             axi[camera_name][int(image_type)].imshow(colormapped_im)
                         elif mode_name[image_type] == 'Infrared':
-                            print('Infrared')
-                            img_grey = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+                            print('Infrared', img.shape)
+                            if len(img.shape) != 2:
+                                img_grey = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+                            else:
+                                img_grey = img
                             print(img_grey.shape)
                             axi[camera_name][int(image_type)].imshow(img_grey, cmap='magma')
                         else:
@@ -268,6 +276,7 @@ def image_loop(point_cloud_array):
                     
                     if mode_name[image_type] == 'Scene':
                         # RBD image, feed it to the NN Model
+                        print('Scene', img.shape)
 
                         prev_frame.setdefault(camera_name, None)
                         
@@ -290,6 +299,7 @@ def image_loop(point_cloud_array):
 # Process to call images from the sim and process them to generate point_cloud_array
 image_loop_proc = Process(target=image_loop, args=(point_cloud_array, ))
 if not args.no_exec:
+    import plotter
     image_loop_proc.start()
     # Start blocking start_graph call
     plotter.start_graph(point_cloud_array)
