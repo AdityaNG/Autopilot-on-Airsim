@@ -1,7 +1,4 @@
-airsim==1.6.0
-msgpack-python==0.5.6
-msgpack-rpc-python==0.4.1
-numpy==1.21.2
+numpy==1.22.3
 opencv-contrib-python-headless==4.5.3.56
 opencv-python-headless==4.5.3.56
 PyOpenGL==3.1.5
@@ -11,10 +8,8 @@ PyQt5-sip==12.9.0
 pyqtgraph==0.12.2
 tornado==4.5.3
 matplotlib==3.4.3
-torch==1.5.1+cu101
-torchvision==0.6.1+cu101
 requests==2.26.0
 tqdm==4.62.3
-manydepth==1.0.0
-monodepth2==1.0.0
-git+https://github.com/AdityaNG/Depth-Perception-from-Stereoscopic-Vision-on-Edge-Devices.git
+msgpack-python==0.5.6
+msgpack-rpc-python==0.4.1
+airsim==1.6.0

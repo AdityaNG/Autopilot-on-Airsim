@@ -25,6 +25,11 @@ The environment involes installing the headless version of OpenCV as the normal 
 source ~/auto/bin/activate
 ```
 
+Generate `settings.stereo.json`
+```bash
+python generate_cameras.py > settings.stereo.json
+```
+
 ## Launching the Project
 
 The `main.py` will start the sim and the rendering software as multiple processes

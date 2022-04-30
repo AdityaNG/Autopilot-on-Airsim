@@ -1,6 +1,8 @@
+
 {
   "SettingsVersion": 1.2,
   "SimMode": "Car",
+  "ViewMode": "",
   "Vehicles": {
     "PhysXCar": {
       "VehicleType": "PhysXCar",
@@ -13,77 +15,142 @@
         "RemoteControlID": -1
       },
       "Cameras": {   
-        "0": {
+		"0": {
 			"CaptureSettings": [
 				{
 					"ImageType": 0,
-					"Width": 1920,
-				  	"Height": 1080,
+					"Width": 480,
+				  	"Height": 270,
 					"FOV_Degrees": 90
 				},
 				{
-					"ImageType": 1,
-					"Width": 1920,
-				  	"Height": 1080,
-					"FOV_Degrees": 90
-				},
-				{
-					"ImageType": 7,
-					"Width": 1920,
-				  	"Height": 1080,
+					"ImageType": 4,
+					"Width": 480,
+				  	"Height": 270,
 					"FOV_Degrees": 90
 				}
 				],
 				"X": 0.25,
-				"Y": -0.1,
+				"Y": -0.1000,
 				"Z": -1.7,
 				"Pitch": 0.0,
 				"Roll": 0.0,
 				"Yaw": 0
         },
-        "1": {
+
+		"1": {
 			"CaptureSettings": [
 				{
 					"ImageType": 0,
-					"Width": 1920,
-				  	"Height": 1080,
+					"Width": 480,
+				  	"Height": 270,
 					"FOV_Degrees": 90
 				},
 				{
-					"ImageType": 1,
-					"Width": 1920,
-				  	"Height": 1080,
-					"FOV_Degrees": 90
-				},
-				{
-					"ImageType": 7,
-					"Width": 1920,
-				  	"Height": 1080,
+					"ImageType": 4,
+					"Width": 480,
+				  	"Height": 270,
 					"FOV_Degrees": 90
 				}
-			  ],
-			  "X": 0.25,
-			  "Y": 0.1,
-			  "Z": -1.7,
-			  "Pitch": 0.0,
-			  "Roll": 0.0,
-			  "Yaw": 0.0
-        }        
-      }
+				],
+				"X": 0.25,
+				"Y": -0.0500,
+				"Z": -1.7,
+				"Pitch": 0.0,
+				"Roll": 0.0,
+				"Yaw": 0
+        },
+
+		"2": {
+			"CaptureSettings": [
+				{
+					"ImageType": 0,
+					"Width": 480,
+				  	"Height": 270,
+					"FOV_Degrees": 90
+				},
+				{
+					"ImageType": 4,
+					"Width": 480,
+				  	"Height": 270,
+					"FOV_Degrees": 90
+				}
+				],
+				"X": 0.25,
+				"Y": 0.0000,
+				"Z": -1.7,
+				"Pitch": 0.0,
+				"Roll": 0.0,
+				"Yaw": 0
+        },
+
+		"3": {
+			"CaptureSettings": [
+				{
+					"ImageType": 0,
+					"Width": 480,
+				  	"Height": 270,
+					"FOV_Degrees": 90
+				},
+				{
+					"ImageType": 4,
+					"Width": 480,
+				  	"Height": 270,
+					"FOV_Degrees": 90
+				}
+				],
+				"X": 0.25,
+				"Y": 0.0500,
+				"Z": -1.7,
+				"Pitch": 0.0,
+				"Roll": 0.0,
+				"Yaw": 0
+        },
+
+		"4": {
+			"CaptureSettings": [
+				{
+					"ImageType": 0,
+					"Width": 480,
+				  	"Height": 270,
+					"FOV_Degrees": 90
+				},
+				{
+					"ImageType": 4,
+					"Width": 480,
+				  	"Height": 270,
+					"FOV_Degrees": 90
+				}
+				],
+				"X": 0.25,
+				"Y": 0.1000,
+				"Z": -1.7,
+				"Pitch": 0.0,
+				"Roll": 0.0,
+				"Yaw": 0
+        }
+
+		}
     }
   },
   "SubWindows": [
-	{"WindowID": 0, "ImageType": 0, "CameraName": "0", "Visible": true},
-    {"WindowID": 1, "ImageType": 7, "CameraName": "0", "Visible": true}
+	{"WindowID": 0, "ImageType": 0, "CameraName": "0", "Visible": true}
   ],
   "Recording": {
     "RecordOnMove": false,
-    "RecordInterval": 0.05,
+    "RecordInterval": 0.5,
     "Cameras": [
 		{ "CameraName": "0", "ImageType": 0, "PixelsAsFloat": false, "Compress": false },
-		{ "CameraName": "0", "ImageType": 1, "PixelsAsFloat": false, "Compress": false },
-		{ "CameraName": "0", "ImageType": 7, "PixelsAsFloat": false, "Compress": false }
+		{ "CameraName": "1", "ImageType": 0, "PixelsAsFloat": false, "Compress": false },
+		{ "CameraName": "2", "ImageType": 0, "PixelsAsFloat": false, "Compress": false },
+		{ "CameraName": "3", "ImageType": 0, "PixelsAsFloat": false, "Compress": false },
+		{ "CameraName": "4", "ImageType": 0, "PixelsAsFloat": false, "Compress": false },
+
+		{ "CameraName": "0", "ImageType": 4, "PixelsAsFloat": true, "Compress": false },
+		{ "CameraName": "1", "ImageType": 4, "PixelsAsFloat": true, "Compress": false },
+		{ "CameraName": "2", "ImageType": 4, "PixelsAsFloat": true, "Compress": false },
+		{ "CameraName": "3", "ImageType": 4, "PixelsAsFloat": true, "Compress": false },
+		{ "CameraName": "4", "ImageType": 4, "PixelsAsFloat": true, "Compress": false }
     ]
   }
 }
-
