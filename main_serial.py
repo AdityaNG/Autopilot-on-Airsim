@@ -99,6 +99,7 @@ def get_image(req, mode_name, camera_data):
 
     for response in responses:
         p_mat = np.array(camera_data[response.camera_name].proj_mat.matrix)
+        print("p_mat", p_mat)
         Quat = camera_data[response.camera_name].pose.orientation
         Quat = [Quat.w_val, Quat.x_val, Quat.y_val, Quat.z_val ]
             

@@ -56,7 +56,7 @@ def start_graph(points_q):
     w.addItem(g)
 
     graph_region = gl.GLScatterPlotItem(pos=np.zeros((1, 3), dtype=np.float32), color=(0, 1, 0, 0.5), size=0.05, pxMode=False)
-    #graph_region.rotate(180, 1, 0, 0)
+    graph_region.rotate(90 + 135, 1, 0, 0)
     #graph_region.translate(0, 0, 2.4)
     w.addItem(graph_region)
     t = QtCore.QTimer()

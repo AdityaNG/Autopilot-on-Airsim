@@ -138,7 +138,7 @@
   ],
   "Recording": {
     "RecordOnMove": false,
-    "RecordInterval": 0.5,
+    "RecordInterval": 3,
     "Cameras": [
 		{ "CameraName": "0", "ImageType": 0, "PixelsAsFloat": false, "Compress": false },
 		{ "CameraName": "1", "ImageType": 0, "PixelsAsFloat": false, "Compress": false },
@@ -146,11 +146,35 @@
 		{ "CameraName": "3", "ImageType": 0, "PixelsAsFloat": false, "Compress": false },
 		{ "CameraName": "4", "ImageType": 0, "PixelsAsFloat": false, "Compress": false },
 
+		{ "CameraName": "0", "ImageType": 1, "PixelsAsFloat": true, "Compress": false },
+		{ "CameraName": "1", "ImageType": 1, "PixelsAsFloat": true, "Compress": false },
+		{ "CameraName": "2", "ImageType": 1, "PixelsAsFloat": true, "Compress": false },
+		{ "CameraName": "3", "ImageType": 1, "PixelsAsFloat": true, "Compress": false },
+		{ "CameraName": "4", "ImageType": 1, "PixelsAsFloat": true, "Compress": false },
+
+		{ "CameraName": "0", "ImageType": 2, "PixelsAsFloat": true, "Compress": false },
+		{ "CameraName": "1", "ImageType": 2, "PixelsAsFloat": true, "Compress": false },
+		{ "CameraName": "2", "ImageType": 2, "PixelsAsFloat": true, "Compress": false },
+		{ "CameraName": "3", "ImageType": 2, "PixelsAsFloat": true, "Compress": false },
+		{ "CameraName": "4", "ImageType": 2, "PixelsAsFloat": true, "Compress": false },
+
 		{ "CameraName": "0", "ImageType": 4, "PixelsAsFloat": true, "Compress": false },
 		{ "CameraName": "1", "ImageType": 4, "PixelsAsFloat": true, "Compress": false },
 		{ "CameraName": "2", "ImageType": 4, "PixelsAsFloat": true, "Compress": false },
 		{ "CameraName": "3", "ImageType": 4, "PixelsAsFloat": true, "Compress": false },
-		{ "CameraName": "4", "ImageType": 4, "PixelsAsFloat": true, "Compress": false }
+		{ "CameraName": "4", "ImageType": 4, "PixelsAsFloat": true, "Compress": false },
+
+		{ "CameraName": "0", "ImageType": 5, "PixelsAsFloat": false, "Compress": false },
+		{ "CameraName": "1", "ImageType": 5, "PixelsAsFloat": false, "Compress": false },
+		{ "CameraName": "2", "ImageType": 5, "PixelsAsFloat": false, "Compress": false },
+		{ "CameraName": "3", "ImageType": 5, "PixelsAsFloat": false, "Compress": false },
+		{ "CameraName": "4", "ImageType": 5, "PixelsAsFloat": false, "Compress": false },		
+
+		{ "CameraName": "0", "ImageType": 7, "PixelsAsFloat": true, "Compress": false },
+		{ "CameraName": "1", "ImageType": 7, "PixelsAsFloat": true, "Compress": false },
+		{ "CameraName": "2", "ImageType": 7, "PixelsAsFloat": true, "Compress": false },
+		{ "CameraName": "3", "ImageType": 7, "PixelsAsFloat": true, "Compress": false },
+		{ "CameraName": "4", "ImageType": 7, "PixelsAsFloat": true, "Compress": false }
     ]
   }
 }

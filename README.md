@@ -1,20 +1,28 @@
-# Camera Setup
+# Autopilot
 
-Stereo experiment involves 2 cameras. Goal of the experiment is to use monodepth, monodepth2, manydepth and other self-supervised disparity estimation techniques to show that the respective networks can improve on unseen data during runtime as new data comes in.
+<img src="gifs/3d.gif">
 
-| Cam | ROI                | FOV | x     | y     | z    | yaw |
-|-----|--------------------|-----|-------|-------|------|-----|
-| 0   | FrontL             | 90  | 0.25  | -0.16 | -1.7 | 0   |
-| 1   | FrontR             | 90  | 0.25  | 0.16  | -1.7 | 0   |
+# Generating ground truth data
 
+The simulator sends in the following
 
-# Getting Started 
+## RGB Data
+<img src="imgs/rgb.png">
 
-## Download Airsim
+## Normalised Disparity Data
+<img src="imgs/disp.png">
 
-Download the Airsim 1.4.0 binaries from github : https://github.com/microsoft/AirSim/releases/tag/v1.4.0-linux
-
-The latest 1.5.0 binaries are buggy.
+## Producing 3D point cloud
+We are able to use `points = cv2.reprojectImageTo3D(depth_map, p_mat)` to generate the point cloud.
+```python
+p_mat = np.array([[-0.501202762, 0.000000000, 0.000000000, 0.000000000],
+    [0.000000000, -0.501202762, 0.000000000, 0.000000000],
+    [0.000000000, 0.000000000, 10.00000000, 100.00000000],
+    [0.000000000, 0.000000000, -10.0000000, 0.000000000]
+]) 
+points = cv2.reprojectImageTo3D(depth_map, p_mat)
+```
+<img src="imgs/disp.png">
 
 
 ## Setting up Python env
@@ -46,4 +54,11 @@ https://pytorch.org/get-started/locally/
 
 ```bash
 pip3 install torch==1.9.1+cu111 torchvision==0.10.1+cu111 torchaudio==0.9.1 -f https://download.pytorch.org/whl/torch_stable.html
+```
+
+# Running the sim
+```bash
+~/Apps/AirSimNH_1.6.0/LinuxNoEditor/AirSimNH.sh -WINDOWED -ResX=640 -ResY=480 --settings /home/aditya/Autopilot/settings.stereo.json
+
+~/Apps/LandscapeMountains/LinuxNoEditor/LandscapeMountains.sh -WINDOWED -ResX=640 -ResY=480 --settings /home/aditya/Autopilot/settings.stereo.json
 ```

@@ -20,6 +20,7 @@ import airsim
 
 import PIL
 
+from stereo_vision import stereo_vision
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-r', '--recording_path', type=str, default=os.path.abspath(os.path.join(os.getenv("HOME"), "Documents/AirSim/2022-04-30-10-00-20/")), help='Path to Airshim recording folder')
@@ -38,8 +39,7 @@ cam_name = {
     '0': 'FrontL',
     str(generate_cameras.NUM_CAMS): 'FrontR'
 }
-#for i in range(1, generate_cameras.NUM_CAMS):
-for i in args.camera_list:
+for i in range(1, generate_cameras.NUM_CAMS):
     cam_name[str(i)] = 'C' + str(i)
 mode_name = {
     0: 'Scene', 
@@ -51,6 +51,9 @@ mode_name = {
     6: 'SurfaceNormals',
     7: 'Infrared'
 }
+
+#sv = stereo_vision(width=1920, height=1080, defaultCalibFile=False, CAMERA_CALIBRATION_YAML="calibration/fsds.yml", objectTracking=False, display=True, graphics=False, scale=1, pc_extrapolation=False)
+sv = stereo_vision(width=1920, height=1080, defaultCalibFile=False, CAMERA_CALIBRATION_YAML="calibration/fsds.yml", objectTracking=False, display=True, graphics=False, scale=4, pc_extrapolation=False)
 
 plt.ion()
 plt.show(block=False)
@@ -65,14 +68,14 @@ for ind in range(len(args.camera_list)):
     for j, v in enumerate(args.view_list):
         m = mode_name[int(v)]
         #axi[i].setdefault(m, {})
-        #axi[i][int(v)] = plt.subplot(plots_height, plots_width, plots_width*ind +j+1)    
-        axi[i][int(v)] = plt.subplot(plots_width, plots_height, plots_height*j +ind+1)    
+        axi[i][int(v)] = plt.subplot(plots_height, plots_width, plots_width*ind +j+1)    
         axi[i][int(v)].title.set_text(cam_name[i] + '_' + m)
 
 for i, row in df.iterrows():
     files = row['ImageFile'].split(";")
     files_path = list(map(lambda x: os.path.join(args.recording_path, 'images', x), files))
     #print(files)
+    cam_imgs = {}
     for i, f in enumerate(files_path):
         cam_id, img_format = files[i].split("_")[2:4]
         img_format = int(img_format)
@@ -81,12 +84,20 @@ for i, row in df.iterrows():
             img = PIL.Image.open(f)
             print(img.size)
             img = np.array(img.getdata()).reshape(img.size[1], img.size[0], 3)
+            img = img.astype('float32') / 255.0
+            cam_imgs[cam_id] = img
+            axi[cam_id][img_format].imshow(img)
         elif f.endswith('.pfm'):
             img, scale = airsim.read_pfm(f)
+            axi[cam_id][img_format].imshow(img, cmap='magma')
         else:
             print("Unknown format")
 
         #axi[cam_id][img_format].imshow(img, cmap='magma')
-        if cam_id in args.camera_list:
-            axi[cam_id][img_format].imshow(img)
+    print(cam_imgs['0'].shape)
+    print(cam_imgs['0'].dtype)
+    imgL = cv2.resize(cam_imgs['0'], dsize=(1920, 1080), interpolation=cv2.INTER_CUBIC)
+    imgR = cv2.resize(cam_imgs['4'], dsize=(1920, 1080), interpolation=cv2.INTER_CUBIC)
+    sv.generatePointCloud(imgL, imgR)
+    
     plt.pause(0.001)
