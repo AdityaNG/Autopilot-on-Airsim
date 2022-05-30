@@ -12,3 +12,4 @@ index=0
 for m in meshes:
     # Finds one of the cube meshes in the Blocks environment
     print(m.name)
+

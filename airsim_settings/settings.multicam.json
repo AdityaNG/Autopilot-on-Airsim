@@ -1,0 +1,168 @@
+
+{
+  "SettingsVersion": 1.2,
+  "SimMode": "Car",
+  "ViewMode": "",
+  "Vehicles": {
+    "PhysXCar": {
+      "VehicleType": "PhysXCar",
+      "DefaultVehicleState": "",
+      "AutoCreate": true,
+      "PawnPath": "",
+      "EnableCollisionPassthrogh": false,
+      "EnableCollisions": true,
+      "RC": {
+        "RemoteControlID": -1
+      },
+      "Cameras": {   
+		"0": {
+			"CaptureSettings": [
+				{
+					"ImageType": 0,
+					"Width": 480,
+				  	"Height": 270,
+					"FOV_Degrees": 90
+				},
+				{
+					"ImageType": 4,
+					"Width": 480,
+				  	"Height": 270,
+					"FOV_Degrees": 90
+				}
+			],
+			"X": 0.25, "Y": 0, "Z": -1.7,
+            "Pitch": 0, "Roll": 0, "Yaw": 0
+        },
+
+		"1": {
+			"CaptureSettings": [
+				{
+					"ImageType": 0,
+					"Width": 480,
+				  	"Height": 270,
+					"FOV_Degrees": 90
+				},
+				{
+					"ImageType": 4,
+					"Width": 480,
+				  	"Height": 270,
+					"FOV_Degrees": 90
+				}
+			],
+			"X": -1.25, "Y": 0, "Z": -1.7,
+            "Pitch": 0, "Roll": 0, "Yaw": 180
+        },
+
+		"2": {
+			"CaptureSettings": [
+				{
+					"ImageType": 0,
+					"Width": 480,
+				  	"Height": 270,
+					"FOV_Degrees": 90
+				},
+				{
+					"ImageType": 4,
+					"Width": 480,
+				  	"Height": 270,
+					"FOV_Degrees": 90
+				}
+			],
+			"X": -0.8, "Y": 0.45, "Z": -1.7,
+            "Pitch": 0, "Roll": 0, "Yaw": 90
+        },
+
+		"3": {
+			"CaptureSettings": [
+				{
+					"ImageType": 0,
+					"Width": 480,
+				  	"Height": 270,
+					"FOV_Degrees": 90
+				},
+				{
+					"ImageType": 4,
+					"Width": 480,
+				  	"Height": 270,
+					"FOV_Degrees": 90
+				}
+			],
+			"X": -0.8, "Y": -0.45, "Z": -1.7,
+            "Pitch": 0, "Roll": 0, "Yaw": -90
+        },
+
+		"4": {
+			"CaptureSettings": [
+				{
+					"ImageType": 0,
+					"Width": 480,
+				  	"Height": 270,
+					"FOV_Degrees": 90
+				},
+				{
+					"ImageType": 4,
+					"Width": 480,
+				  	"Height": 270,
+					"FOV_Degrees": 90
+				}
+			],
+			"X": 0.25, "Y": 0, "Z": -1.7,
+            "Pitch": 0, "Roll": 0, "Yaw": 0
+        }
+
+		}
+    }
+  },
+  "SubWindows": [
+	{"WindowID": 0, "ImageType": 0, "CameraName": "3", "Visible": false},
+	{"WindowID": 1, "ImageType": 0, "CameraName": "1", "Visible": false},
+	{"WindowID": 2, "ImageType": 0, "CameraName": "2", "Visible": false}
+  ],
+  "Recording": {
+    "RecordOnMove": false,
+    "RecordInterval": 3,
+    "Cameras": [
+		{ "CameraName": "0", "ImageType": 0, "PixelsAsFloat": false, "Compress": false },
+		{ "CameraName": "1", "ImageType": 0, "PixelsAsFloat": false, "Compress": false },
+		{ "CameraName": "2", "ImageType": 0, "PixelsAsFloat": false, "Compress": false },
+		{ "CameraName": "3", "ImageType": 0, "PixelsAsFloat": false, "Compress": false },
+		{ "CameraName": "4", "ImageType": 0, "PixelsAsFloat": false, "Compress": false },
+
+		{ "CameraName": "0", "ImageType": 1, "PixelsAsFloat": true, "Compress": false },
+		{ "CameraName": "1", "ImageType": 1, "PixelsAsFloat": true, "Compress": false },
+		{ "CameraName": "2", "ImageType": 1, "PixelsAsFloat": true, "Compress": false },
+		{ "CameraName": "3", "ImageType": 1, "PixelsAsFloat": true, "Compress": false },
+		{ "CameraName": "4", "ImageType": 1, "PixelsAsFloat": true, "Compress": false },
+
+		{ "CameraName": "0", "ImageType": 2, "PixelsAsFloat": true, "Compress": false },
+		{ "CameraName": "1", "ImageType": 2, "PixelsAsFloat": true, "Compress": false },
+		{ "CameraName": "2", "ImageType": 2, "PixelsAsFloat": true, "Compress": false },
+		{ "CameraName": "3", "ImageType": 2, "PixelsAsFloat": true, "Compress": false },
+		{ "CameraName": "4", "ImageType": 2, "PixelsAsFloat": true, "Compress": false },
+
+		{ "CameraName": "0", "ImageType": 4, "PixelsAsFloat": true, "Compress": false },
+		{ "CameraName": "1", "ImageType": 4, "PixelsAsFloat": true, "Compress": false },
+		{ "CameraName": "2", "ImageType": 4, "PixelsAsFloat": true, "Compress": false },
+		{ "CameraName": "3", "ImageType": 4, "PixelsAsFloat": true, "Compress": false },
+		{ "CameraName": "4", "ImageType": 4, "PixelsAsFloat": true, "Compress": false },
+
+		{ "CameraName": "0", "ImageType": 5, "PixelsAsFloat": false, "Compress": false },
+		{ "CameraName": "1", "ImageType": 5, "PixelsAsFloat": false, "Compress": false },
+		{ "CameraName": "2", "ImageType": 5, "PixelsAsFloat": false, "Compress": false },
+		{ "CameraName": "3", "ImageType": 5, "PixelsAsFloat": false, "Compress": false },
+		{ "CameraName": "4", "ImageType": 5, "PixelsAsFloat": false, "Compress": false },		
+
+		{ "CameraName": "0", "ImageType": 6, "PixelsAsFloat": false, "Compress": false },
+		{ "CameraName": "1", "ImageType": 6, "PixelsAsFloat": false, "Compress": false },
+		{ "CameraName": "2", "ImageType": 6, "PixelsAsFloat": false, "Compress": false },
+		{ "CameraName": "3", "ImageType": 6, "PixelsAsFloat": false, "Compress": false },
+		{ "CameraName": "4", "ImageType": 6, "PixelsAsFloat": false, "Compress": false },
+
+		{ "CameraName": "0", "ImageType": 7, "PixelsAsFloat": false, "Compress": false },
+		{ "CameraName": "1", "ImageType": 7, "PixelsAsFloat": false, "Compress": false },
+		{ "CameraName": "2", "ImageType": 7, "PixelsAsFloat": false, "Compress": false },
+		{ "CameraName": "3", "ImageType": 7, "PixelsAsFloat": false, "Compress": false },
+		{ "CameraName": "4", "ImageType": 7, "PixelsAsFloat": false, "Compress": false }
+    ]
+  }
+}

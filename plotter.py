@@ -10,6 +10,8 @@ import pyqtgraph.opengl as gl
 import numpy as np
 import sys
 
+from pyqtgraph import Vector
+
 import math
 
 global POINTS
@@ -52,12 +54,17 @@ def start_graph(points_q):
     w.show()
     w.setWindowTitle('LIDAR Point Cloud')
 
+    w.cameraPosition()
+    w.setCameraPosition(pos=QtGui.QVector3D(0, 0, 0), )
+
     g = gl.GLGridItem()
     w.addItem(g)
 
-    graph_region = gl.GLScatterPlotItem(pos=np.zeros((1, 3), dtype=np.float32), color=(0, 1, 0, 0.5), size=0.05, pxMode=False)
-    graph_region.rotate(90 + 135, 1, 0, 0)
-    #graph_region.translate(0, 0, 2.4)
+    graph_region = gl.GLScatterPlotItem(pos=np.zeros((1, 3), dtype=np.float32), color=(0, 1, 0, 0.5), size=0.01, pxMode=False)
+    
+    graph_region.translate(0, 0, 1.7)
+    graph_region.rotate(180, 1, 0, 0)
+    #graph_region.rotate(90 + 135, 1, 0, 0)
     w.addItem(graph_region)
     t = QtCore.QTimer()
     t.timeout.connect(update_graph)
@@ -80,4 +87,6 @@ def plot_points(data):
 
 if __name__ == '__main__':
     if (sys.flags.interactive != 1) or not hasattr(QtCore, 'PYQT_VERSION'):
-        start_graph()
+        from multiprocessing import Queue
+        point_cloud_array = Queue()
+        start_graph(point_cloud_array)

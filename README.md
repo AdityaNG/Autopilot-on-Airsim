@@ -60,5 +60,17 @@ pip3 install torch==1.9.1+cu111 torchvision==0.10.1+cu111 torchaudio==0.9.1 -f h
 ```bash
 ~/Apps/AirSimNH_1.6.0/LinuxNoEditor/AirSimNH.sh -WINDOWED -ResX=640 -ResY=480 --settings /home/aditya/Autopilot/settings.stereo.json
 
+/mnt/HDD/home/aditya/Airsim/AbandonedPark/LinuxNoEditor/AbandonedPark.sh -WINDOWED -ResX=640 -ResY=480 --settings /home/aditya/Autopilot/settings.stereo.json
+
+/mnt/HDD/home/aditya/Airsim/Africa_Savannah/LinuxNoEditor/Africa_001.sh -WINDOWED -ResX=640 -ResY=480 --settings /home/aditya/Autopilot/settings.stereo.json
+
+/mnt/HDD/home/aditya/Airsim/Building_99/LinuxNoEditor/Building_99.sh -WINDOWED -ResX=640 -ResY=480 --settings /home/aditya/Autopilot/settings.stereo.json
+
+/mnt/HDD/home/aditya/Airsim/TrapCam/LinuxNoEditor/TrapCam.sh -WINDOWED -ResX=640 -ResY=480 --settings /home/aditya/Autopilot/settings.stereo.json
+
+/mnt/HDD/home/aditya/Airsim/ZhangJiajie/LinuxNoEditor/ZhangJiajie.sh -WINDOWED -ResX=640 -ResY=480 --settings /home/aditya/Autopilot/settings.stereo.json
+
+/mnt/HDD/home/aditya/Airsim/MSBuild2018/LinuxNoEditor/MSBuild2018.sh -WINDOWED -ResX=640 -ResY=480 --settings /home/aditya/Autopilot/settings.stereo.json
+
 ~/Apps/LandscapeMountains/LinuxNoEditor/LandscapeMountains.sh -WINDOWED -ResX=640 -ResY=480 --settings /home/aditya/Autopilot/settings.stereo.json
 ```
