@@ -10,6 +10,8 @@ import pyqtgraph.opengl as gl
 import numpy as np
 import sys
 
+from pyqtgraph import Vector
+
 import math
 
 global POINTS
@@ -25,34 +27,19 @@ calculated = False
 def update_graph():
     global graph_region, POINTS, point_cloud_array
     global min_height, max_height, colors, calculated, max_dist, min_dist, dist_range
-    colors = np.ones(shape=(len(POINTS), 3), dtype=np.uint8)
-    #POINTS = [(0,0,1), ]
+    
     if not point_cloud_array.empty():
         POINTS = point_cloud_array.get()
     
-    for i in range(len(POINTS)):
-        #colors[i][0] = 0.
-        #colors[i][1] = 0.
-        #colors[i][2] = 1.
-        pass
-        """
-        d = dist(POINTS[i], [0,0,0])
-        print(d)
-        if 30<d<45:
-            colors[i][0] = 0.
-            colors[i][1] = 0.
-            colors[i][2] = 1.
-        else:
-            colors[i][0] = 0.5
-            colors[i][1] = 0.5
-            colors[i][2] = 0.5
-            # print(POINTS[i])
-        """
-
+    #POINTS = [(0,0,1), ]
+    colors = np.ones(shape=(len(POINTS), 3), dtype=np.uint8)
     if len(POINTS)>0:
         POINTS = np.array(POINTS)
-        #graph_region.setData(pos=POINTS, color=colors)
-        graph_region.setData(pos=POINTS)
+        #POINTS_scaled = POINTS / 10000.0
+        POINTS_scaled = POINTS
+        #print(POINTS)
+        graph_region.setData(pos=POINTS_scaled, color=colors)
+        #graph_region.setData(pos=POINTS)
 
 
 def start_graph(points_q):
@@ -67,16 +54,21 @@ def start_graph(points_q):
     w.show()
     w.setWindowTitle('LIDAR Point Cloud')
 
+    w.cameraPosition()
+    w.setCameraPosition(pos=QtGui.QVector3D(0, 0, 0), )
+
     g = gl.GLGridItem()
     w.addItem(g)
 
-    graph_region = gl.GLScatterPlotItem(pos=np.zeros((1, 3), dtype=np.float32), color=(0, 1, 0, 0.5), size=0.05, pxMode=False)
-    #graph_region.rotate(180, 1, 0, 0)
-    #graph_region.translate(0, 0, 2.4)
+    graph_region = gl.GLScatterPlotItem(pos=np.zeros((1, 3), dtype=np.float32), color=(0, 1, 0, 0.5), size=0.01, pxMode=False)
+    
+    graph_region.translate(0, 0, 1.7)
+    graph_region.rotate(180, 1, 0, 0)
+    #graph_region.rotate(90 + 135, 1, 0, 0)
     w.addItem(graph_region)
     t = QtCore.QTimer()
     t.timeout.connect(update_graph)
-    t.start(50)
+    t.start(500)
 
     QtGui.QApplication.instance().exec_()
     print("\n[STOP]\tGraph Window closed. Stopping...")
@@ -95,4 +87,6 @@ def plot_points(data):
 
 if __name__ == '__main__':
     if (sys.flags.interactive != 1) or not hasattr(QtCore, 'PYQT_VERSION'):
-        start_graph()
+        from multiprocessing import Queue
+        point_cloud_array = Queue()
+        start_graph(point_cloud_array)

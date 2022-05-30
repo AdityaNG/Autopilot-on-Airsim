@@ -1,23 +1,28 @@
-# Camera Setup
+# Autopilot
 
-![Camera Demo](/gifs/cams.gif)
+<img src="gifs/3d.gif">
 
-Current setup involves 5 cameras. Four of them being 120 deg wide angle for short range sensing and one narrow FOV front facing camera for long range sensing.
+# Generating ground truth data
 
-| Cam | ROI                | FOV | x     | y     | z    | yaw |
-|-----|--------------------|-----|-------|-------|------|-----|
-| 0   | Front, Short range | 120 | 0.25  | 0     | -1.7 | 0   |
-| 1   | Back               | 120 | -1.25 | 0     | -1.7 | 180 |
-| 2   | Right              | 120 | -0.8  | 0.45  | -1.7 | 90  |
-| 3   | Left               | 120 | -0.8  | -0.45 | -1.7 | -90 |
-| 4   | Front, Long Range  | 45  | 0.25  | 0     | -1.7 | 0   |
+The simulator sends in the following
 
+## RGB Data
+<img src="imgs/rgb.png">
 
-# Getting Started 
+## Normalised Disparity Data
+<img src="imgs/disp.png">
 
-## Download Airsim
-
-Download the Airsim 1.4.0 binaries from github : https://github.com/microsoft/AirSim/releases/tag/v1.4.0-linux
+## Producing 3D point cloud
+We are able to use `points = cv2.reprojectImageTo3D(depth_map, p_mat)` to generate the point cloud.
+```python
+p_mat = np.array([[-0.501202762, 0.000000000, 0.000000000, 0.000000000],
+    [0.000000000, -0.501202762, 0.000000000, 0.000000000],
+    [0.000000000, 0.000000000, 10.00000000, 100.00000000],
+    [0.000000000, 0.000000000, -10.0000000, 0.000000000]
+]) 
+points = cv2.reprojectImageTo3D(depth_map, p_mat)
+```
+<img src="imgs/disp.png">
 
 
 ## Setting up Python env
@@ -28,11 +33,44 @@ The environment involes installing the headless version of OpenCV as the normal 
 source ~/auto/bin/activate
 ```
 
-## Launching Airsim
+Generate `settings.stereo.json`
+```bash
+python generate_cameras.py > settings.stereo.json
+```
 
-First cd into the downloaded folder. Then execute while pointing to the full path of the settings.json within this project
+## Launching the Project
+
+The `main.py` will start the sim and the rendering software as multiple processes
 
 ```
-cd ~/Apps/AirSimNH_1.4.0/LinuxNoEditor
-./AirSimNH.sh -WINDOWED -ResX=640 -ResY=480 --settings /home/aditya/Autopilot/settings.json
+python main.py
+```
+
+## Install PyTorch with CUDA
+
+Refer to the official website for details
+
+https://pytorch.org/get-started/locally/
+
+```bash
+pip3 install torch==1.9.1+cu111 torchvision==0.10.1+cu111 torchaudio==0.9.1 -f https://download.pytorch.org/whl/torch_stable.html
+```
+
+# Running the sim
+```bash
+~/Apps/AirSimNH_1.6.0/LinuxNoEditor/AirSimNH.sh -WINDOWED -ResX=640 -ResY=480 --settings /home/aditya/Autopilot/settings.stereo.json
+
+/mnt/HDD/home/aditya/Airsim/AbandonedPark/LinuxNoEditor/AbandonedPark.sh -WINDOWED -ResX=640 -ResY=480 --settings /home/aditya/Autopilot/settings.stereo.json
+
+/mnt/HDD/home/aditya/Airsim/Africa_Savannah/LinuxNoEditor/Africa_001.sh -WINDOWED -ResX=640 -ResY=480 --settings /home/aditya/Autopilot/settings.stereo.json
+
+/mnt/HDD/home/aditya/Airsim/Building_99/LinuxNoEditor/Building_99.sh -WINDOWED -ResX=640 -ResY=480 --settings /home/aditya/Autopilot/settings.stereo.json
+
+/mnt/HDD/home/aditya/Airsim/TrapCam/LinuxNoEditor/TrapCam.sh -WINDOWED -ResX=640 -ResY=480 --settings /home/aditya/Autopilot/settings.stereo.json
+
+/mnt/HDD/home/aditya/Airsim/ZhangJiajie/LinuxNoEditor/ZhangJiajie.sh -WINDOWED -ResX=640 -ResY=480 --settings /home/aditya/Autopilot/settings.stereo.json
+
+/mnt/HDD/home/aditya/Airsim/MSBuild2018/LinuxNoEditor/MSBuild2018.sh -WINDOWED -ResX=640 -ResY=480 --settings /home/aditya/Autopilot/settings.stereo.json
+
+~/Apps/LandscapeMountains/LinuxNoEditor/LandscapeMountains.sh -WINDOWED -ResX=640 -ResY=480 --settings /home/aditya/Autopilot/settings.stereo.json
 ```
