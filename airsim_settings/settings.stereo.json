@@ -4,17 +4,17 @@
   "SimMode": "Car",
   "ViewMode": "",
   "Vehicles": {
-    "PhysXCar": {
-      "VehicleType": "PhysXCar",
-      "DefaultVehicleState": "",
-      "AutoCreate": true,
-      "PawnPath": "",
-      "EnableCollisionPassthrogh": false,
-      "EnableCollisions": true,
-      "RC": {
-        "RemoteControlID": -1
-      },
-      "Cameras": {   
+	"PhysXCar": {
+	  "VehicleType": "PhysXCar",
+	  "DefaultVehicleState": "",
+	  "AutoCreate": true,
+	  "PawnPath": "",
+	  "EnableCollisionPassthrogh": false,
+	  "EnableCollisions": true,
+	  "RC": {
+		"RemoteControlID": -1
+	  },
+	  "Cameras": {   
 		"0": {
 			"CaptureSettings": [
 				{
@@ -36,7 +36,7 @@
 				"Pitch": 0.0,
 				"Roll": 0.0,
 				"Yaw": 0
-        },
+		},
 
 		"1": {
 			"CaptureSettings": [
@@ -59,7 +59,7 @@
 				"Pitch": 0.0,
 				"Roll": 0.0,
 				"Yaw": 0
-        },
+		},
 
 		"2": {
 			"CaptureSettings": [
@@ -82,7 +82,7 @@
 				"Pitch": 0.0,
 				"Roll": 0.0,
 				"Yaw": 0
-        },
+		},
 
 		"3": {
 			"CaptureSettings": [
@@ -105,7 +105,7 @@
 				"Pitch": 0.0,
 				"Roll": 0.0,
 				"Yaw": 0
-        },
+		},
 
 		"4": {
 			"CaptureSettings": [
@@ -128,19 +128,19 @@
 				"Pitch": 0.0,
 				"Roll": 0.0,
 				"Yaw": 0
-        }
+		}
 
 		}
-    }
+	}
   },
   "SubWindows": [
 	{"WindowID": 0, "ImageType": 5, "CameraName": "0", "Visible": true},
 	{"WindowID": 1, "ImageType": 7, "CameraName": "0", "Visible": true}
   ],
   "Recording": {
-    "RecordOnMove": false,
-    "RecordInterval": 3,
-    "Cameras": [
+	"RecordOnMove": false,
+	"RecordInterval": 3,
+	"Cameras": [
 		{ "CameraName": "0", "ImageType": 0, "PixelsAsFloat": false, "Compress": false },
 		{ "CameraName": "1", "ImageType": 0, "PixelsAsFloat": false, "Compress": false },
 		{ "CameraName": "2", "ImageType": 0, "PixelsAsFloat": false, "Compress": false },
@@ -182,6 +182,6 @@
 		{ "CameraName": "2", "ImageType": 7, "PixelsAsFloat": false, "Compress": false },
 		{ "CameraName": "3", "ImageType": 7, "PixelsAsFloat": false, "Compress": false },
 		{ "CameraName": "4", "ImageType": 7, "PixelsAsFloat": false, "Compress": false }
-    ]
+	]
   }
 }

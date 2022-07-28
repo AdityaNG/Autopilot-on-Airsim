@@ -16,19 +16,24 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import airsim_utils.generate_cameras as generate_cameras
 
-import airsim
+import airsim # tornado-4.5.3
 
 import PIL
 
-from multiprocessing import Process, Queue
+from multiprocessing import Process, Array, Pool, Queue
 import subprocess
 from scipy.spatial.transform import Rotation
 
+import monodepth2
+from helper import stretch_and_contort
+
 parser = argparse.ArgumentParser()
-parser.add_argument('-r', '--recording_path', type=str, default=os.path.abspath(os.path.join(os.getenv("HOME"), "Documents/AirSim/2022-05-22-11-10-49/")), help='Path to Airshim recording folder')
+parser.add_argument('-r', '--recording_path', type=str, default=os.path.abspath(os.path.join(os.getenv("HOME"), "Documents/AirSim/2022-04-30-10-00-20/")), help='Path to Airshim recording folder')
 parser.add_argument('-s', '--settings_path', type=str, default=os.path.abspath(os.path.join(os.getcwd(), "airsim_settings", "settings.multicam.json")), help='Path to Airshim recording folder')
-parser.add_argument('-v', '--view_list', nargs='+', default=['0', '1', '2', '4', '5', '7'], help='List of cameras visualised : [0, 1, ... , 6]')
-parser.add_argument('-c', '--camera_list', nargs='+', default=list(map(str, list(range(0, generate_cameras.NUM_CAMS+1)) )), help='List of cameras visualised : [0, 1]')
+parser.add_argument('-v', '--view_list', nargs='+', default=['0', '4', '8'], help='List of cameras visualised : [0, 1, ... , 6]')
+#parser.add_argument('-c', '--camera_list', nargs='+', default=list(map(str, list(range(0, generate_cameras.NUM_CAMS+1)) )), help='List of cameras visualised : [0, 1]')
+#parser.add_argument('-c', '--camera_list', nargs='+', default=list(map(str, list(range(0, )) )), help='List of cameras visualised : [0, 1]')
+parser.add_argument('-c', '--camera_list', nargs='+', default=['0', str(generate_cameras.NUM_CAMS)], help='List of cameras visualised : [0, 1]')
 parser.add_argument('-p3', '--plot_3D', action='store_true', help='3D plotting')
 parser.add_argument('-w', '--wait', action='store_true', help='Wait for keypress to play')
 
@@ -48,14 +53,14 @@ settings_file.close()
 settings_json = json.loads(settings_str)
 
 camera_details = settings_json['Vehicles']['PhysXCar']['Cameras']
-for cam_id in camera_details:
-	print(cam_id, camera_details[cam_id])
+# for cam_id in camera_details:
+# 	print(cam_id, camera_details[cam_id])
 
 #exit()
 point_cloud_array = Queue()
 
 def compute_points(depth_map):
-	print("compute points")
+	#print("compute points")
 	p_mat = np.array([
 		[959.779968, 0.000000, 959.290331, 0.000000],
 		[0.000000, 959.867798, 539.535675, 0.000000],
@@ -97,8 +102,7 @@ def compute_points(depth_map):
 
 	#depth_map = np.uint8(depth_map)
 	#depth_map = depth_map.astype(np.uint8)
-	print(depth_map.shape)
-	print(depth_map.dtype)
+
 	#info = np.info(depth_map.dtype) # Get the information of the incoming image type
 	#depth_map = np.uint8(depth_map / info.max)
 	#depth_map = np.uint8(depth_map)
@@ -124,6 +128,7 @@ def image_loop(point_cloud_array):
 		point_cloud_array is a multiprocessing.Queue() object
 		The new point cloud gets pushed onto the Queue
 	"""
+	md = monodepth2.monodepth2()
 	points = np.array([
 		[1,1,1],
 		[2,2,2]
@@ -133,9 +138,10 @@ def image_loop(point_cloud_array):
 		'0': 'FrontL',
 		str(generate_cameras.NUM_CAMS): 'FrontR'
 	}
-	#for i in range(1, generate_cameras.NUM_CAMS):
-	for i in args.camera_list:
+	for i in range(1, generate_cameras.NUM_CAMS):
+	#for i in args.camera_list:
 		cam_name[str(i)] = 'C' + str(i)
+
 	mode_name = {
 		0: 'Scene', 
 		1: 'DepthPlanar', 
@@ -144,7 +150,8 @@ def image_loop(point_cloud_array):
 		4: 'DisparityNormalized',
 		5: 'Segmentation',
 		6: 'SurfaceNormals',
-		7: 'Infrared'
+		7: 'Infrared',
+		8: 'PredictedDisparity'
 	}
 
 	plt.ion()
@@ -166,9 +173,10 @@ def image_loop(point_cloud_array):
 	
 	for i, row in df.iterrows():
 		final_points = np.array([[0, 0, 0], ])
+		#predicted_points = np.array([[0, 0, 0], ])
+		predicted_points = []
 		files = row['ImageFile'].split(";")
 		files_path = list(map(lambda x: os.path.join(args.recording_path, 'images', x), files))
-		#print(files)
 		for j, f in enumerate(files_path):
 			cam_id, img_format = files[j].split("_")[2:4]
 			img_format = int(img_format)
@@ -180,29 +188,53 @@ def image_loop(point_cloud_array):
 			else:
 				print("Unknown format")
 
-			print(j, img_format)
 			#if cam_id=='0' and img_format==4 and args.plot_3D:
 			if img_format==4 and args.plot_3D:
 				points_rt = compute_points(img)
 				rot_mat = Rotation.from_euler('xyz', angles=[camera_details[cam_id]['Pitch'], camera_details[cam_id]['Roll'], camera_details[cam_id]['Yaw']], degrees=True).as_matrix()
 				trans_mat = np.array([camera_details[cam_id]['X'], camera_details[cam_id]['Y'], camera_details[cam_id]['Z']])
-				print('----')
-				print(rot_mat.shape)
-				print(trans_mat.shape)
-				print(points_rt[0].shape)
+				# print('----')
+				# print(rot_mat.shape)
+				# print(trans_mat.shape)
+				# print(points_rt[0].shape)
 
 				translate = lambda p: rot_mat @ p + trans_mat
 
 				points_rt = np.array([translate(p) for p in points_rt])
 				final_points = np.concatenate((final_points, points_rt), )
 
-			if img_format==7 or img_format==5: # Infrared
-				img = cv2.blur(img,(5,5)) 
+			if img_format==0 and cam_id in args.camera_list: # RGB
+				print(img.dtype)
+				depth = md.eval(img.astype(np.uint8))
+				depth_disp = cv2.cvtColor(depth, cv2.COLOR_BGR2GRAY)
+				depth_comp = depth_disp.astype(np.float32)
+				
+				points_rt = compute_points(depth_comp)
+				rot_mat = Rotation.from_euler('xyz', angles=[camera_details[cam_id]['Pitch'], camera_details[cam_id]['Roll'], camera_details[cam_id]['Yaw']], degrees=True).as_matrix()
+				trans_mat = np.array([camera_details[cam_id]['X'], camera_details[cam_id]['Y'], camera_details[cam_id]['Z']])
+				# print('----')
+				# print(rot_mat.shape)
+				# print(trans_mat.shape)
+				# print(points_rt[0].shape)
+
+				translate = lambda p: rot_mat @ p + trans_mat
+
+				points_rt = np.array([translate(p) for p in points_rt])
+				#predicted_points = np.concatenate((predicted_points, points_rt), )
+				predicted_points.append(points_rt)
+				
+				axi[cam_id][8].imshow(depth_disp)
 
 			#axi[cam_id][img_format].imshow(img, cmap='magma')
 			if cam_id in args.camera_list and str(img_format) in args.view_list:
 				axi[cam_id][img_format].imshow(img)
 		
+		print(len(predicted_points))
+		merged_points = predicted_points[0]
+		for i in range(1, len(predicted_points)):
+			#merged_points = np.concatenate((merged_points, stretch_and_contort(merged_points, predicted_points[i]) ), )
+			merged_points = stretch_and_contort(merged_points, predicted_points[i])
+
 		if args.plot_3D:
 			point_cloud_array.put(final_points)
 		

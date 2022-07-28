@@ -10,19 +10,19 @@ import argparse
 #from autopilot_utils import *
 from datetime import datetime
 import signal
-import matplotlib as mpl
-import matplotlib.cm as cm
-import matplotlib.pyplot as plt
 import pandas as pd
 import airsim_utils.generate_cameras as generate_cameras
 
 import airsim
 
 import PIL
+from PIL import Image
 
 from multiprocessing import Process, Queue
 import subprocess
 from scipy.spatial.transform import Rotation
+
+from helper import cv2_grid_display
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-r', '--recording_path', type=str, default=os.path.abspath(os.path.join(os.getenv("HOME"), "Documents/AirSim/2022-05-22-11-10-49/")), help='Path to Airshim recording folder')
@@ -118,6 +118,7 @@ def compute_points(depth_map):
 	points_rt = np.multiply(points_rt, transf)
 	return points_rt
 
+
 def image_loop(point_cloud_array):
 	"""
 		image_loop is launched as a subprocess
@@ -147,9 +148,8 @@ def image_loop(point_cloud_array):
 		7: 'Infrared'
 	}
 
-	plt.ion()
-	plt.show(block=False)
-
+	grid_titles = {}
+	grid_shapes = {}
 	axi = {}  # dict of subplots
 	plots_height = len(args.camera_list)
 	#plots_width = len(args.view_list) + 1
@@ -159,10 +159,17 @@ def image_loop(point_cloud_array):
 		axi.setdefault(i, {})
 		for j, v in enumerate(args.view_list):
 			m = mode_name[int(v)]
-			#axi[i].setdefault(m, {})
-			#axi[i][int(v)] = plt.subplot(plots_height, plots_width, plots_width*ind +j+1)	
-			axi[i][int(v)] = plt.subplot(plots_width, plots_height, plots_height*j +ind+1)	
-			axi[i][int(v)].title.set_text(cam_name[i] + '_' + m)
+			axi[i].setdefault(m, {})
+			grid_index = plots_height*j +ind+1
+			grid_title = cam_name[i] + '_' + m
+			CaptureSettings = camera_details[i]['CaptureSettings'][0]
+			image_shape = CaptureSettings["Height"], CaptureSettings["Width"]
+
+			axi[i][int(v)] = (plots_width, plots_height, grid_index, grid_title, image_shape)
+			grid_titles[grid_index] = grid_title
+			grid_shapes[grid_index] = image_shape
+
+	grid_display = cv2_grid_display(plots_width, plots_height, grid_titles, grid_shapes, scale_factor=0.5)
 	
 	for i, row in df.iterrows():
 		final_points = np.array([[0, 0, 0], ])
@@ -172,43 +179,48 @@ def image_loop(point_cloud_array):
 		for j, f in enumerate(files_path):
 			cam_id, img_format = files[j].split("_")[2:4]
 			img_format = int(img_format)
-			if f.endswith('.ppm'):
-				img = PIL.Image.open(f)
-				img = np.array(img.getdata()).reshape(img.size[1], img.size[0], 3)
-			elif f.endswith('.pfm'):
-				img, scale = airsim.read_pfm(f)
-			else:
-				print("Unknown format")
-
-			print(j, img_format)
-			#if cam_id=='0' and img_format==4 and args.plot_3D:
-			if img_format==4 and args.plot_3D:
-				points_rt = compute_points(img)
-				rot_mat = Rotation.from_euler('xyz', angles=[camera_details[cam_id]['Pitch'], camera_details[cam_id]['Roll'], camera_details[cam_id]['Yaw']], degrees=True).as_matrix()
-				trans_mat = np.array([camera_details[cam_id]['X'], camera_details[cam_id]['Y'], camera_details[cam_id]['Z']])
-				print('----')
-				print(rot_mat.shape)
-				print(trans_mat.shape)
-				print(points_rt[0].shape)
-
-				translate = lambda p: rot_mat @ p + trans_mat
-
-				points_rt = np.array([translate(p) for p in points_rt])
-				final_points = np.concatenate((final_points, points_rt), )
-
-			if img_format==7 or img_format==5: # Infrared
-				img = cv2.blur(img,(5,5)) 
-
-			#axi[cam_id][img_format].imshow(img, cmap='magma')
 			if cam_id in args.camera_list and str(img_format) in args.view_list:
-				axi[cam_id][img_format].imshow(img)
+				if f.endswith('.ppm'):
+					img = Image.open(f)
+					img = np.array(img.getdata()).reshape(img.size[1], img.size[0], 3)
+				elif f.endswith('.pfm'):
+					img, scale = airsim.read_pfm(f)
+				else:
+					print("Unknown format")
+
+				# print(j, img_format)
+				#if cam_id=='0' and img_format==4 and args.plot_3D:
+				if img_format==4 and args.plot_3D:
+					points_rt = compute_points(img)
+					rot_mat = Rotation.from_euler('xyz', angles=[camera_details[cam_id]['Pitch'], camera_details[cam_id]['Roll'], camera_details[cam_id]['Yaw']], degrees=True).as_matrix()
+					trans_mat = np.array([camera_details[cam_id]['X'], camera_details[cam_id]['Y'], camera_details[cam_id]['Z']])
+					# print('----')
+					# print(rot_mat.shape)
+					# print(trans_mat.shape)
+					# print(points_rt[0].shape)
+
+					translate = lambda p: rot_mat @ p + trans_mat
+
+					points_rt = np.array([translate(p) for p in points_rt])
+					final_points = np.concatenate((final_points, points_rt), )
+
+				# if img_format==7 or img_format==5: # Infrared
+				# 	img = cv2.blur(img,(5,5))
+
+				
+				plots_width, plots_height, grid_index, grid_title, image_shape = axi[cam_id][img_format]
+				if len(img.shape)==2:
+					img = cv2.cvtColor(img,cv2.COLOR_GRAY2BGR)
+				grid_display.imshow(grid_index, img)
 		
 		if args.plot_3D:
 			point_cloud_array.put(final_points)
 		
-		plt.pause(0.001)
-		if i==0 and args.wait:
-			plt.waitforbuttonpress()
+		grid_display.display()
+		key = cv2.waitKey(1)
+		if key == ord('q'):
+			cv2.destroyAllWindows()
+			return
 
 try:
 	# Process to call images from the sim and process them to generate point_cloud_array

@@ -3,19 +3,19 @@
   "SimMode": "Car",
   "ViewMode": "NoDisplay",
   "Vehicles": {
-    "PhysXCar": {
-      "VehicleType": "PhysXCar",
-      "DefaultVehicleState": "",
-      "AutoCreate": true,
-      "PawnPath": "",
-      "EnableCollisionPassthrogh": false,
-      "EnableCollisions": true,
-      "RC": {
-        "RemoteControlID": -1
-      },
-      "Cameras": {   
-        "4": {
-          "X": 0.25, "Y": 0, "Z": -1.7,
+	"PhysXCar": {
+	  "VehicleType": "PhysXCar",
+	  "DefaultVehicleState": "",
+	  "AutoCreate": true,
+	  "PawnPath": "",
+	  "EnableCollisionPassthrogh": false,
+	  "EnableCollisions": true,
+	  "RC": {
+		"RemoteControlID": -1
+	  },
+	  "Cameras": {   
+		"4": {
+		  "X": 0.25, "Y": 0, "Z": -1.7,
 		  "Pitch": 0, "Roll": 0, "Yaw": 0,
 		  "CaptureSettings": [
 			{
@@ -31,7 +31,7 @@
 			}
 		  ],
 		  "NoiseSettings": [
-		      	{
+			  	{
 			"Enabled": false,
 			"ImageType": 0,
 
@@ -52,10 +52,10 @@
 			"HorzDistortionContrib": 1.0,
 			"HorzDistortionStrength": 0.002
 			}
-	    	]
-        },
-        "0": {
-          "X": 0.25, "Y": 0, "Z": -1.7,
+			]
+		},
+		"0": {
+		  "X": 0.25, "Y": 0, "Z": -1.7,
 		  "Pitch": 0, "Roll": 0, "Yaw": 0,
 		  "CaptureSettings": [
 			{
@@ -71,7 +71,7 @@
 			}
 		  ],
 		  "NoiseSettings": [
-		      	{
+			  	{
 			"Enabled": false,
 			"ImageType": 0,
 
@@ -92,10 +92,10 @@
 			"HorzDistortionContrib": 1.0,
 			"HorzDistortionStrength": 0.002
 			}
-	    	]
-        },
-        "1": {
-          "X": -1.25, "Y": 0, "Z": -1.7,
+			]
+		},
+		"1": {
+		  "X": -1.25, "Y": 0, "Z": -1.7,
 		  "Pitch": 0, "Roll": 0, "Yaw": 180,
 		  "CaptureSettings": [
 			{
@@ -111,7 +111,7 @@
 			}
 		  ],
 		  "NoiseSettings": [
-		      	{
+			  	{
 			"Enabled": false,
 			"ImageType": 0,
 
@@ -132,10 +132,10 @@
 			"HorzDistortionContrib": 1.0,
 			"HorzDistortionStrength": 0.002
 			}
-	    	]
-        },
-        "2": {
-          "X": -0.8, "Y": 0.45, "Z": -1.7,
+			]
+		},
+		"2": {
+		  "X": -0.8, "Y": 0.45, "Z": -1.7,
 		  "Pitch": 0, "Roll": 0, "Yaw": 90,
 		  "CaptureSettings": [
 			{
@@ -151,7 +151,7 @@
 			}
 		  ],
 		  "NoiseSettings": [
-		      	{
+			  	{
 			"Enabled": false,
 			"ImageType": 0,
 
@@ -172,10 +172,10 @@
 			"HorzDistortionContrib": 1.0,
 			"HorzDistortionStrength": 0.002
 			}
-	    	]
-        },
-        "3": {
-          "X": -0.8, "Y": -0.45, "Z": -1.7,
+			]
+		},
+		"3": {
+		  "X": -0.8, "Y": -0.45, "Z": -1.7,
 		  "Pitch": 0, "Roll": 0, "Yaw": -90,
 		  "CaptureSettings": [
 			{
@@ -191,7 +191,7 @@
 			}
 		  ],
 		  "NoiseSettings": [
-		      	{
+			  	{
 			"Enabled": false,
 			"ImageType": 0,
 
@@ -212,24 +212,24 @@
 			"HorzDistortionContrib": 1.0,
 			"HorzDistortionStrength": 0.002
 			}
-	    	]
-        }
-      }
-    }
+			]
+		}
+	  }
+	}
   },
   "SubWindows": [
 	{"WindowID": 0, "ImageType": 0, "CameraName": "0", "Visible": true},
-    {"WindowID": 1, "ImageType": 0, "CameraName": "1", "Visible": false},
-    {"WindowID": 2, "ImageType": 0, "CameraName": "2", "Visible": false}
+	{"WindowID": 1, "ImageType": 0, "CameraName": "1", "Visible": false},
+	{"WindowID": 2, "ImageType": 0, "CameraName": "2", "Visible": false}
   ],
   "Recording": {
-    "RecordOnMove": false,
-    "RecordInterval": 0.05,
-    "Cameras": [
+	"RecordOnMove": false,
+	"RecordInterval": 0.05,
+	"Cameras": [
 		{ "CameraName": "0", "ImageType": 5, "PixelsAsFloat": false, "Compress": false },
 		{ "CameraName": "1", "ImageType": 5, "PixelsAsFloat": false, "Compress": false },
 		{ "CameraName": "2", "ImageType": 5, "PixelsAsFloat": false, "Compress": false }
-    ]
+	]
   }
 }
 

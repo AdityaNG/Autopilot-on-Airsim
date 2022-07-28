@@ -4,17 +4,17 @@
   "SimMode": "Car",
   "ViewMode": "",
   "Vehicles": {
-    "PhysXCar": {
-      "VehicleType": "PhysXCar",
-      "DefaultVehicleState": "",
-      "AutoCreate": true,
-      "PawnPath": "",
-      "EnableCollisionPassthrogh": false,
-      "EnableCollisions": true,
-      "RC": {
-        "RemoteControlID": -1
-      },
-      "Cameras": {   
+	"PhysXCar": {
+	  "VehicleType": "PhysXCar",
+	  "DefaultVehicleState": "",
+	  "AutoCreate": true,
+	  "PawnPath": "",
+	  "EnableCollisionPassthrogh": false,
+	  "EnableCollisions": true,
+	  "RC": {
+		"RemoteControlID": -1
+	  },
+	  "Cameras": {   
 		"0": {
 			"CaptureSettings": [
 				{
@@ -31,8 +31,8 @@
 				}
 			],
 			"X": 0.25, "Y": 0, "Z": -1.7,
-            "Pitch": 0, "Roll": 0, "Yaw": 0
-        },
+			"Pitch": 0, "Roll": 0, "Yaw": 0
+		},
 
 		"1": {
 			"CaptureSettings": [
@@ -50,8 +50,8 @@
 				}
 			],
 			"X": -1.25, "Y": 0, "Z": -1.7,
-            "Pitch": 0, "Roll": 0, "Yaw": 180
-        },
+			"Pitch": 0, "Roll": 0, "Yaw": 180
+		},
 
 		"2": {
 			"CaptureSettings": [
@@ -69,8 +69,8 @@
 				}
 			],
 			"X": -0.8, "Y": 0.45, "Z": -1.7,
-            "Pitch": 0, "Roll": 0, "Yaw": 90
-        },
+			"Pitch": 0, "Roll": 0, "Yaw": 90
+		},
 
 		"3": {
 			"CaptureSettings": [
@@ -88,8 +88,8 @@
 				}
 			],
 			"X": -0.8, "Y": -0.45, "Z": -1.7,
-            "Pitch": 0, "Roll": 0, "Yaw": -90
-        },
+			"Pitch": 0, "Roll": 0, "Yaw": -90
+		},
 
 		"4": {
 			"CaptureSettings": [
@@ -107,11 +107,11 @@
 				}
 			],
 			"X": 0.25, "Y": 0, "Z": -1.7,
-            "Pitch": 0, "Roll": 0, "Yaw": 0
-        }
+			"Pitch": 0, "Roll": 0, "Yaw": 0
+		}
 
 		}
-    }
+	}
   },
   "SubWindows": [
 	{"WindowID": 0, "ImageType": 0, "CameraName": "3", "Visible": false},
@@ -119,9 +119,9 @@
 	{"WindowID": 2, "ImageType": 0, "CameraName": "2", "Visible": false}
   ],
   "Recording": {
-    "RecordOnMove": false,
-    "RecordInterval": 3,
-    "Cameras": [
+	"RecordOnMove": false,
+	"RecordInterval": 3,
+	"Cameras": [
 		{ "CameraName": "0", "ImageType": 0, "PixelsAsFloat": false, "Compress": false },
 		{ "CameraName": "1", "ImageType": 0, "PixelsAsFloat": false, "Compress": false },
 		{ "CameraName": "2", "ImageType": 0, "PixelsAsFloat": false, "Compress": false },
@@ -163,6 +163,6 @@
 		{ "CameraName": "2", "ImageType": 7, "PixelsAsFloat": false, "Compress": false },
 		{ "CameraName": "3", "ImageType": 7, "PixelsAsFloat": false, "Compress": false },
 		{ "CameraName": "4", "ImageType": 7, "PixelsAsFloat": false, "Compress": false }
-    ]
+	]
   }
 }

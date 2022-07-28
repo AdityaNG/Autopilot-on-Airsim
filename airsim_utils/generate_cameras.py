@@ -12,17 +12,17 @@ INITIAL_TEMPLATE = """
   "SimMode": "Car",
   "ViewMode": "NoDisplay",
   "Vehicles": {
-    "PhysXCar": {
-      "VehicleType": "PhysXCar",
-      "DefaultVehicleState": "",
-      "AutoCreate": true,
-      "PawnPath": "",
-      "EnableCollisionPassthrogh": false,
-      "EnableCollisions": true,
-      "RC": {
-        "RemoteControlID": -1
-      },
-      "Cameras": {   """
+	"PhysXCar": {
+	  "VehicleType": "PhysXCar",
+	  "DefaultVehicleState": "",
+	  "AutoCreate": true,
+	  "PawnPath": "",
+	  "EnableCollisionPassthrogh": false,
+	  "EnableCollisions": true,
+	  "RC": {
+		"RemoteControlID": -1
+	  },
+	  "Cameras": {   """
 
 CAM_TEMPLATE = """
 		"{CAM_ID}": {{
@@ -46,24 +46,24 @@ CAM_TEMPLATE = """
 				"Pitch": 0.0,
 				"Roll": 0.0,
 				"Yaw": 0
-        }}"""
+		}}"""
 
 FINAL_TEMPLATE = """
 		}
-    }
+	}
   },
   "SubWindows": [
 	{"WindowID": 0, "ImageType": 0, "CameraName": "0", "Visible": true},
-    {"WindowID": 1, "ImageType": 7, "CameraName": "0", "Visible": true}
+	{"WindowID": 1, "ImageType": 7, "CameraName": "0", "Visible": true}
   ],
   "Recording": {
-    "RecordOnMove": false,
-    "RecordInterval": 0.05,
-    "Cameras": [
+	"RecordOnMove": false,
+	"RecordInterval": 0.05,
+	"Cameras": [
 		{ "CameraName": "0", "ImageType": 0, "PixelsAsFloat": false, "Compress": false },
 		{ "CameraName": "0", "ImageType": 1, "PixelsAsFloat": false, "Compress": false },
 		{ "CameraName": "0", "ImageType": 7, "PixelsAsFloat": false, "Compress": false }
-    ]
+	]
   }
 }"""
 
