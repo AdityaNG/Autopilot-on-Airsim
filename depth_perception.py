@@ -27,7 +27,7 @@ from helper import cv2_grid_display
 parser = argparse.ArgumentParser()
 parser.add_argument('-r', '--recording_path', type=str, default=os.path.abspath(os.path.join(os.getenv("HOME"), "Documents/AirSim/2022-05-22-11-10-49/")), help='Path to Airshim recording folder')
 parser.add_argument('-s', '--settings_path', type=str, default=os.path.abspath(os.path.join(os.getcwd(), "airsim_settings", "settings.multicam.json")), help='Path to Airshim recording folder')
-parser.add_argument('-v', '--view_list', nargs='+', default=['0', '1', '2', '4', '5', '7'], help='List of cameras visualised : [0, 1, ... , 6]')
+parser.add_argument('-v', '--view_list', nargs='+', default=['0', '1'], help='List of cameras visualised : [0, 1, ... , 6]')
 parser.add_argument('-c', '--camera_list', nargs='+', default=list(map(str, list(range(0, generate_cameras.NUM_CAMS+1)) )), help='List of cameras visualised : [0, 1]')
 parser.add_argument('-p3', '--plot_3D', action='store_true', help='3D plotting')
 parser.add_argument('-w', '--wait', action='store_true', help='Wait for keypress to play')
@@ -125,6 +125,12 @@ def image_loop(point_cloud_array):
 		point_cloud_array is a multiprocessing.Queue() object
 		The new point cloud gets pushed onto the Queue
 	"""
+	from manydepth  import manydepth
+	from monodepth2  import monodepth2
+
+	# md = manydepth()
+	md = monodepth2()
+
 	points = np.array([
 		[1,1,1],
 		[2,2,2]
@@ -151,9 +157,10 @@ def image_loop(point_cloud_array):
 	grid_titles = {}
 	grid_shapes = {}
 	axi = {}  # dict of subplots
+	special_plot = {}
 	plots_height = len(args.camera_list)
-	#plots_width = len(args.view_list) + 1
-	plots_width = len(args.view_list)
+	plots_width = len(args.view_list) + 1
+	# plots_width = len(args.view_list)
 	for ind in range(len(args.camera_list)):
 		i = args.camera_list[ind]
 		axi.setdefault(i, {})
@@ -168,6 +175,19 @@ def image_loop(point_cloud_array):
 			axi[i][int(v)] = (plots_width, plots_height, grid_index, grid_title, image_shape)
 			grid_titles[grid_index] = grid_title
 			grid_shapes[grid_index] = image_shape
+		
+		j = len(args.view_list)
+		grid_index = plots_height*j +ind+1
+		grid_title = cam_name[i] + '_' + 'manydepth'
+		CaptureSettings = camera_details[i]['CaptureSettings'][0]
+		image_shape = CaptureSettings["Height"], CaptureSettings["Width"]
+
+		axi[i][max(list(map(int, args.view_list)))+1] = (plots_width, plots_height, grid_index, grid_title, image_shape)
+		grid_titles[grid_index] = grid_title
+		grid_shapes[grid_index] = image_shape
+		
+		special_plot[i] = grid_index
+		
 
 	grid_display = cv2_grid_display(plots_width, plots_height, grid_titles, grid_shapes, scale_factor=0.5)
 	
@@ -187,6 +207,18 @@ def image_loop(point_cloud_array):
 					img, scale = airsim.read_pfm(f)
 				else:
 					print("Unknown format")
+
+				plots_width, plots_height, grid_index, grid_title, image_shape = axi[cam_id][img_format]
+
+				if img_format==0:
+					img = img.astype(np.uint8)
+					depth = md.eval(img)
+					# grid_display.imshow(grid_index+plots_width-1, depth)
+					#cv2.imshow('depth', depth)
+					#grid_display.imshow(grid_index*(plots_width), depth)
+					#grid_display.imshow(grid_index+(plots_width-1), depth)
+					grid_display.imshow(special_plot[cam_id], depth)
+
 
 				# print(j, img_format)
 				#if cam_id=='0' and img_format==4 and args.plot_3D:
@@ -208,10 +240,11 @@ def image_loop(point_cloud_array):
 				# 	img = cv2.blur(img,(5,5))
 
 				
-				plots_width, plots_height, grid_index, grid_title, image_shape = axi[cam_id][img_format]
+				
 				if len(img.shape)==2:
 					img = cv2.cvtColor(img,cv2.COLOR_GRAY2BGR)
 				grid_display.imshow(grid_index, img)
+
 		
 		if args.plot_3D:
 			point_cloud_array.put(final_points)

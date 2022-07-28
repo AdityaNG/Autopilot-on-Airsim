@@ -78,7 +78,7 @@ class cv2_grid_display:
 			try:
 				img = cv2.resize(img, (self.grid_shapes[index][1], self.grid_shapes[index][0]))
 			except Exception as ex:
-				print(ex)	
+				print(ex)
 		# self.frame[
 		# 	self.draw_pos_x[index]:self.draw_pos_x[index]+self.grid_shapes[index][0],
 		# 	self.draw_pos_y[index]:self.draw_pos_y[index]+self.grid_shapes[index][1]
