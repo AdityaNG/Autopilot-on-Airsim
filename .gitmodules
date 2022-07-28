@@ -1,0 +1,3 @@
+[submodule "seg"]
+	path = seg
+	url = https://github.com/Kora-Scenes/seg
