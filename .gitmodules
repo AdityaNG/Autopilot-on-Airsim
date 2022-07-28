@@ -1,3 +1,6 @@
 [submodule "seg"]
 	path = seg
 	url = https://github.com/Kora-Scenes/seg
+[submodule "obj_det"]
+	path = obj_det
+	url = https://github.com/Kora-Scenes/obj_det
